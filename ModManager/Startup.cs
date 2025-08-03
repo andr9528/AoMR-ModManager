@@ -1,5 +1,7 @@
 using System.Text.Json;
+using ModManager.Abstractions.Services;
 using ModManager.Abstractions.Startup;
+using ModManager.Services;
 
 namespace ModManager;
 
@@ -99,5 +101,8 @@ internal class Startup
 
     private void ConfigureServices(IServiceCollection services)
     {
+        services.AddScoped<IFileService, FileService>();
+
+        services.AddSingleton<IStateService, StateService>();
     }
 }

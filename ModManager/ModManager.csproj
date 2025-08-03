@@ -41,4 +41,8 @@
     <DefineConstants>$(DefineConstants);USE_UITESTS</DefineConstants>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="FastCloner" />
+  </ItemGroup>
+
 </Project>

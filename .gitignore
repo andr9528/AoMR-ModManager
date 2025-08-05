@@ -485,3 +485,4 @@ $RECYCLE.BIN/
 solution-config.props
 # Publish Profiles
 !**/Properties/PublishProfiles/*.pubxml
+/ModManager/myth-mod-status.json

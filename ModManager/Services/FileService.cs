@@ -8,6 +8,7 @@ namespace ModManager.Services;
 
 public class FileService : IFileService
 {
+    private readonly ILogger<FileService> logger;
     private const string MOD_STATUS_FILE_NAME = "myth-mod-status";
     private const string MOD_MANAGER_FOLDER = "ModManager";
     private const string PLAYSET_FOLDER = "Playsets";
@@ -15,8 +16,10 @@ public class FileService : IFileService
     private const string DEFAULT_ON_PLAYSET_FILE_NAME = "all-on";
     private static string PlaysetsLocation;
 
-    public FileService()
+    public FileService(ILogger<FileService> logger)
     {
+        this.logger = logger;
+
         PlaysetsLocation = Path.Combine(GetExecutionDirectory(), MOD_MANAGER_FOLDER, PLAYSET_FOLDER);
         if (!Directory.Exists(PlaysetsLocation))
         {
@@ -27,18 +30,26 @@ public class FileService : IFileService
     /// <inheritdoc />
     public async Task<IModStatus> GetCurrentModStatus()
     {
-        string jsonPath = GetModStatusFilePath();
-
-        string content = await File.ReadAllTextAsync(jsonPath);
-
-        var modStatus = JsonConvert.DeserializeObject<ModStatus>(content);
-
-        if (modStatus == null)
+        try
         {
-            throw new InvalidOperationException("Failed to deserialize mod status.");
-        }
+            string jsonPath = GetModStatusFilePath();
 
-        return modStatus;
+            string content = await File.ReadAllTextAsync(jsonPath);
+
+            var modStatus = JsonConvert.DeserializeObject<ModStatus>(content);
+
+            if (modStatus == null)
+            {
+                throw new InvalidOperationException("Failed to deserialize mod status.");
+            }
+
+            return modStatus;
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Failed to get current mod status.");
+            throw;
+        }
     }
 
     private string GetExecutionDirectory()
@@ -54,24 +65,40 @@ public class FileService : IFileService
     }
 
     /// <inheritdoc />
-    public async Task ApplyModStatus(IModStatus newStatus)
+    public async Task ActivatePlayset(IPlayset playset)
     {
-        string jsonPath = GetModStatusFilePath();
+        try
+        {
+            string jsonPath = GetModStatusFilePath();
 
-        string content = JsonConvert.SerializeObject(newStatus, Formatting.Indented);
+            string content = JsonConvert.SerializeObject(playset, Formatting.Indented);
 
-        await File.WriteAllTextAsync(jsonPath, content);
+            await File.WriteAllTextAsync(jsonPath, content);
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Failed to activate playset: {PlaysetName}", playset.FileName);
+            throw;
+        }
     }
 
     /// <inheritdoc />
-    public async Task SavePlaysetModStatus(string fileName, IModStatus modStatus)
+    public async Task SavePlayset(IPlayset playset)
     {
-        string fileNameWithExtension = EnsureExtension(fileName, ".json");
-        string savePath = Path.Combine(PlaysetsLocation, fileNameWithExtension);
+        try
+        {
+            string fileNameWithExtension = EnsureExtension(playset.FileName, ".json");
+            string savePath = Path.Combine(PlaysetsLocation, fileNameWithExtension);
 
-        string content = JsonConvert.SerializeObject(modStatus, Formatting.Indented);
+            string content = JsonConvert.SerializeObject(playset.ModStatus, Formatting.Indented);
 
-        await File.WriteAllTextAsync(savePath, content);
+            await File.WriteAllTextAsync(savePath, content);
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Failed to save playset: {PlaysetName}", playset.FileName);
+            throw;
+        }
     }
 
     private string EnsureExtension(string path, string targetExt)
@@ -106,40 +133,53 @@ public class FileService : IFileService
     /// <inheritdoc />
     public async Task<IModStatus> LoadModStatus(string fileName)
     {
-        string fileNameWithExtension = EnsureExtension(fileName, ".json");
-        string loadPath = Path.Combine(PlaysetsLocation, fileNameWithExtension);
-
-        if (!File.Exists(loadPath))
+        try
         {
-            throw new FileNotFoundException(
-                $"Mod status file '{fileNameWithExtension}' not found in '{PlaysetsLocation}'.");
+            string fileNameWithExtension = EnsureExtension(fileName, ".json");
+            string loadPath = Path.Combine(PlaysetsLocation, fileNameWithExtension);
+
+            if (!File.Exists(loadPath))
+            {
+                throw new FileNotFoundException(
+                    $"Mod status file '{fileNameWithExtension}' not found in '{PlaysetsLocation}'.");
+            }
+
+            string content = await File.ReadAllTextAsync(loadPath);
+
+            var modStatus = JsonConvert.DeserializeObject<ModStatus>(content);
+
+            if (modStatus == null)
+            {
+                throw new InvalidOperationException("Failed to deserialize mod status.");
+            }
+
+            return modStatus;
         }
-
-        string content = await File.ReadAllTextAsync(loadPath);
-
-        var modStatus = JsonConvert.DeserializeObject<ModStatus>(content);
-
-        if (modStatus == null)
+        catch (Exception e)
         {
-            throw new InvalidOperationException("Failed to deserialize mod status.");
+            logger.LogError(e, "Failed to load mod status from file: {FileName}", fileName);
+            throw;
         }
-
-        return modStatus;
     }
 
     /// <inheritdoc />
     public async Task<IList<IPlayset>> LoadPlaysets()
     {
-        string[] files = Directory.GetFiles(PlaysetsLocation, "*.json");
-        var modStatuses = await Task.WhenAll(files.Select(LoadModStatus));
-
-        var playsets = files.Select((file, index) => new Playset
+        try
         {
-            FileName = Path.GetFileName(file),
-            ModStatus = modStatuses[index],
-        }).ToList<IPlayset>();
+            string[] files = Directory.GetFiles(PlaysetsLocation, "*.json");
+            var modStatuses = await Task.WhenAll(files.Select(LoadModStatus));
 
-        return playsets;
+            var playsets = files.Select((file, index) => new Playset(Path.GetFileName(file), modStatuses[index]))
+                .ToList<IPlayset>();
+
+            return playsets;
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Failed to load playsets from directory: {PlaysetsLocation}", PlaysetsLocation);
+            throw;
+        }
     }
 
     /// <inheritdoc />
@@ -153,89 +193,123 @@ public class FileService : IFileService
     /// <inheritdoc />
     public async Task UpdatePlaysetsProperties(IModStatus currentModStatus, IList<IPlayset> playsets)
     {
-        foreach (IMod mod in currentModStatus.Mods)
+        try
         {
-            foreach (IPlayset playset in playsets)
+            foreach (IMod mod in currentModStatus.Mods)
             {
-                IMod? playsetMod = playset.ModStatus.Mods.FirstOrDefault(m => m.Title == mod.Title);
-
-                if (playsetMod == null)
+                foreach (IPlayset playset in playsets)
                 {
-                    IMod clonedMod = FastCloner.FastCloner.DeepClone(mod) ??
-                                     throw new InvalidOperationException($"Failed to Clone the mod: {mod.Title}");
-                    clonedMod.Hidden = true;
-                    playset.ModStatus.Mods.Add(clonedMod);
-                    continue;
+                    IMod? playsetMod = playset.ModStatus.Mods.FirstOrDefault(m => m.Title == mod.Title);
+
+                    if (playsetMod == null)
+                    {
+                        IMod clonedMod = FastCloner.FastCloner.DeepClone(mod) ??
+                                         throw new InvalidOperationException($"Failed to Clone the mod: {mod.Title}");
+                        clonedMod.Hidden = true;
+                        playset.ModStatus.Mods.Add(clonedMod);
+                        continue;
+                    }
+
+                    playsetMod.Description = mod.Description;
+                    playsetMod.InstallCrc = mod.InstallCrc;
+                    playsetMod.InstallTime = mod.InstallTime;
+                    playsetMod.LastUpdate = mod.LastUpdate;
                 }
-
-                playsetMod.Description = mod.Description;
-                playsetMod.InstallCrc = mod.InstallCrc;
-                playsetMod.InstallTime = mod.InstallTime;
-                playsetMod.LastUpdate = mod.LastUpdate;
             }
-        }
 
-        await Task.WhenAll(playsets.Select(x => SavePlaysetModStatus(x.FileName, x.ModStatus)));
+            await Task.WhenAll(playsets.Select(SavePlayset));
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Failed to update playsets properties.");
+            throw;
+        }
     }
 
     /// <inheritdoc />
-    public async Task NewPlayset(string fileName, IModStatus currentModStatus, bool makeEmptyPlayset = true)
+    public async Task NewPlayset(IPlayset playset, bool makeEmptyPlayset = true)
     {
-        if (DoesPlaysetExist(fileName))
+        try
         {
-            return;
-        }
-
-        IModStatus clonedModStatus = FastCloner.FastCloner.DeepClone(currentModStatus) ??
-                                     throw new InvalidOperationException($"Failed to Clone the current Mod Status");
-
-        if (makeEmptyPlayset)
-        {
-            clonedModStatus.Mods = clonedModStatus.Mods.Select(mod =>
+            if (DoesPlaysetExist(playset.FileName))
             {
-                mod.Hidden = true;
-                return mod;
-            }).ToList();
-        }
+                return;
+            }
 
-        await SavePlaysetModStatus(fileName, clonedModStatus);
+            IModStatus clonedModStatus = FastCloner.FastCloner.DeepClone(playset.ModStatus) ??
+                                         throw new InvalidOperationException($"Failed to Clone the current Mod Status");
+
+            if (makeEmptyPlayset)
+            {
+                clonedModStatus.Mods = clonedModStatus.Mods.Select(mod =>
+                {
+                    mod.Hidden = true;
+                    return mod;
+                }).ToList();
+            }
+
+            var newPlayset = new Playset(playset.FileName, clonedModStatus);
+
+            await SavePlayset(newPlayset);
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Failed to create new playset: {PlaysetName}", playset.FileName);
+            throw;
+        }
     }
 
     private async Task CreateAllOnPlayset(IModStatus currentModStatus)
     {
-        if (DoesPlaysetExist(DEFAULT_ON_PLAYSET_FILE_NAME))
+        try
         {
-            return;
+            if (DoesPlaysetExist(DEFAULT_ON_PLAYSET_FILE_NAME))
+            {
+                return;
+            }
+
+            IModStatus? allOnStatus = FastCloner.FastCloner.DeepClone(currentModStatus) ??
+                                      throw new InvalidOperationException($"Failed to Clone the current Mod Status");
+            allOnStatus.Mods = allOnStatus.Mods.Select(mod =>
+            {
+                mod.Enabled = true;
+                return mod;
+            }).ToList();
+
+            await SavePlayset(new Playset(DEFAULT_ON_PLAYSET_FILE_NAME, allOnStatus));
         }
-
-        IModStatus? allOnStatus = FastCloner.FastCloner.DeepClone(currentModStatus) ??
-                                  throw new InvalidOperationException($"Failed to Clone the current Mod Status");
-        allOnStatus.Mods = allOnStatus.Mods.Select(mod =>
+        catch (Exception e)
         {
-            mod.Enabled = true;
-            return mod;
-        }).ToList();
-
-        await SavePlaysetModStatus(DEFAULT_ON_PLAYSET_FILE_NAME, allOnStatus);
+            logger.LogError(e, "Failed to create 'All On' playset.");
+            throw;
+        }
     }
 
     private async Task CreateAllOffPlayset(IModStatus currentModStatus)
     {
-        if (DoesPlaysetExist(DEFAULT_OFF_PLAYSET_FILE_NAME))
+        try
         {
-            return;
+            if (DoesPlaysetExist(DEFAULT_OFF_PLAYSET_FILE_NAME))
+            {
+                return;
+            }
+
+            IModStatus allOffStatus = FastCloner.FastCloner.DeepClone(currentModStatus) ??
+                                      throw new InvalidOperationException($"Failed to Clone the current Mod Status");
+
+            allOffStatus.Mods = allOffStatus.Mods.Select(mod =>
+            {
+                mod.Enabled = false;
+                return mod;
+            }).ToList();
+
+            await SavePlayset(new Playset(DEFAULT_OFF_PLAYSET_FILE_NAME, allOffStatus));
         }
-
-        IModStatus allOffStatus = FastCloner.FastCloner.DeepClone(currentModStatus) ??
-                                  throw new InvalidOperationException($"Failed to Clone the current Mod Status");
-
-        allOffStatus.Mods = allOffStatus.Mods.Select(mod =>
+        catch (Exception e)
         {
-            mod.Enabled = false;
-            return mod;
-        }).ToList();
-
-        await SavePlaysetModStatus(DEFAULT_OFF_PLAYSET_FILE_NAME, allOffStatus);
+            logger.LogError(e, "Failed to create 'All Off' playset.");
+            throw;
+        }
     }
 
     /// <summary>

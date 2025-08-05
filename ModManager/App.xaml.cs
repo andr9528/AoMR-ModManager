@@ -17,7 +17,7 @@ public partial class App : Application
 
     protected Window? MainWindow { get; private set; }
     protected IHost? Host { get; private set; }
-    private Startup Startup { get; set; }
+    internal static Startup Startup { get; set; }
 
     protected override void OnLaunched(LaunchActivatedEventArgs args)
     {

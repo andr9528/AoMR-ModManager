@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using Microsoft.UI.Dispatching;
 using ModManager.Abstractions.Models;
 using ModManager.Abstractions.Services;
 
@@ -10,6 +11,7 @@ namespace ModManager.Services;
 public partial class StateService : ObservableObject, IStateService
 {
     private readonly IFileService fileService;
+    private readonly ILogger<StateService> logger;
     [ObservableProperty] private IModStatus currentModStatus;
     [ObservableProperty] private IPlayset editingPlayset;
     [ObservableProperty] private bool isPlaysetActive;
@@ -18,11 +20,13 @@ public partial class StateService : ObservableObject, IStateService
     public event EventHandler<IModStatus> CurrentModStatusChanged;
     public event EventHandler<IPlayset> EditingPlaysetChanged;
 
-    public StateService(IFileService fileService)
+    public StateService(IFileService fileService, ILogger<StateService> logger)
     {
         this.fileService = fileService;
+        this.logger = logger;
 
-        _ = InitializeState();
+        DispatcherQueue? uiQueue = DispatcherQueue.GetForCurrentThread();
+        uiQueue.TryEnqueue(async () => { await InitializeState(); });
     }
 
     partial void OnCurrentModStatusChanged(IModStatus value)
@@ -37,19 +41,27 @@ public partial class StateService : ObservableObject, IStateService
 
     private async Task InitializeState()
     {
-        CurrentModStatus = await fileService.GetCurrentModStatus();
+        try
+        {
+            CurrentModStatus = await fileService.GetCurrentModStatus();
 
-        await fileService.CreateDefaultPlaysetsIfNotExists(CurrentModStatus);
+            await fileService.CreateDefaultPlaysetsIfNotExists(CurrentModStatus);
 
-        Playsets = new ObservableCollection<IPlayset>(await fileService.LoadPlaysets());
+            Playsets = new ObservableCollection<IPlayset>(await fileService.LoadPlaysets());
 
-        await fileService.UpdatePlaysetsProperties(CurrentModStatus, Playsets);
+            await fileService.UpdatePlaysetsProperties(CurrentModStatus, Playsets);
 
-        EditingPlayset = Playsets.First();
+            EditingPlayset = Playsets.First();
 
-        CurrentModStatusChanged += OnCurrentModStatusChanged;
-        EditingPlaysetChanged += OnEditingPlaysetChanged;
-        ReevaluateIsPlaysetActiveState();
+            CurrentModStatusChanged += OnCurrentModStatusChanged;
+            EditingPlaysetChanged += OnEditingPlaysetChanged;
+            ReevaluateIsPlaysetActiveState();
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Failed to initialize state service.");
+            throw;
+        }
     }
 
     private void OnEditingPlaysetChanged(object? sender, IPlayset e)

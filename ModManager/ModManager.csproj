@@ -43,6 +43,13 @@
 
   <ItemGroup>
     <PackageReference Include="FastCloner" />
+    <PackageReference Include="Uno.CommunityToolkit.WinUI.UI.Controls.DataGrid" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="myth-mod-status.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

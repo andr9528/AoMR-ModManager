@@ -4,6 +4,12 @@ namespace ModManager.Models;
 
 public class Playset : IPlayset
 {
+    public Playset(string fileName, IModStatus modStatus)
+    {
+        ModStatus = modStatus;
+        FileName = fileName;
+    }
+
     /// <inheritdoc />
     public IModStatus ModStatus { get; set; }
 

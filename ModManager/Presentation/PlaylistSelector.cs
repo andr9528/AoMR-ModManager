@@ -12,7 +12,7 @@ public sealed partial class PlaylistSelector : NavigationView
         IsSettingsVisible = false;
 
         PaneDisplayMode = NavigationViewPaneDisplayMode.LeftCompact;
-        CompactPaneLength = 120;
+        CompactPaneLength = 160;
 
         DataContext = new PlaylistSelectorViewModel(stateService);
 

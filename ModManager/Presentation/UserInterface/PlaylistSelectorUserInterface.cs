@@ -1,6 +1,7 @@
 using CommunityToolkit.WinUI.UI.Controls;
 using ModManager.Abstractions.Models;
 using ModManager.Abstractions.Services;
+using ModManager.Presentation.Extensions;
 using ModManager.Presentation.Factory;
 
 namespace ModManager.Presentation.UserInterface;
@@ -11,7 +12,7 @@ public class PlaylistSelectorUserInterface
 
     private enum DataGridColumns
     {
-        TITLE = 0,
+        PLAYSETS = 0,
         ACTIONS = 1,
     }
 
@@ -58,11 +59,17 @@ public class PlaylistSelectorUserInterface
     private DataGrid CreateDataGrid()
     {
         var columns = Enum.GetValues<DataGridColumns>().Select(BuildColumn).ToList();
-        DataGrid dataGrid =
-            DataGridFactory.CreateDataGrid(dataContext, nameof(dataContext.StateService.Playsets), columns);
+        DataGrid dataGrid = DataGridFactory.CreateDataGrid(dataContext,
+            $"{nameof(dataContext.StateService)}.{nameof(dataContext.StateService.Playsets)}", columns);
+
+        dataGrid.SelectionMode = DataGridSelectionMode.Single;
+        dataGrid.AddHandler(UIElement.PointerPressedEvent, new PointerEventHandler(logic.DataGridPreviewPointerPressed),
+            true);
 
         dataContext.IsMenuOpenChanged += (sender, e) => logic.UpdateDataGridColumnVisibility(e, dataGrid);
         logic.UpdateDataGridColumnVisibility(dataContext.IsMenuOpen, dataGrid);
+
+        dataGrid.SelectionChanged += logic.DataGridRowSelectionChanged;
 
         return dataGrid;
     }
@@ -71,7 +78,7 @@ public class PlaylistSelectorUserInterface
     {
         return dataGridColumns switch
         {
-            DataGridColumns.TITLE => BuildTitleColumn(),
+            DataGridColumns.PLAYSETS => BuildTitleColumn(),
             DataGridColumns.ACTIONS => BuildActionsColumn(),
             var _ => throw new ArgumentOutOfRangeException(nameof(dataGridColumns), dataGridColumns, null),
         };
@@ -83,7 +90,7 @@ public class PlaylistSelectorUserInterface
 
         return new DataGridTemplateColumn()
         {
-            Header = "Actions",
+            Header = DataGridColumns.ACTIONS.ToString().ScreamingSnakeCaseToTitleCase(),
             CellTemplate = template,
             Width = new DataGridLength(60, DataGridLengthUnitType.Star),
         };
@@ -97,35 +104,18 @@ public class PlaylistSelectorUserInterface
         };
 
         Button renameButton = CreateRenameButton();
-        Button editButton = CreateEditButton();
         Button deleteButton = CreateDeleteButton();
 
         panel.Children.Add(renameButton);
-        panel.Children.Add(editButton);
         panel.Children.Add(deleteButton);
 
         return panel;
     }
 
-    private Button CreateEditButton()
-    {
-        var button = new Button()
-        {
-            Content = new SymbolIcon(Symbol.Edit),
-        };
-
-        button.SetBinding(FrameworkElement.TagProperty,
-            new Binding {Path = new PropertyPath(nameof(IPlayset.FileName)),});
-        button.Click += logic.EditButtonClicked;
-        return button;
-    }
-
     private Button CreateRenameButton()
     {
-        var button = new Button()
-        {
-            Content = new SymbolIcon(Symbol.Rename),
-        };
+        Button button = ButtonFactory.CreateFontIconButton(ButtonFactory.RENAME_SYMBOL_UNICODE);
+        button.Margin = new Thickness(2);
 
         button.SetBinding(FrameworkElement.TagProperty,
             new Binding {Path = new PropertyPath(nameof(IPlayset.FileName)),});
@@ -135,18 +125,8 @@ public class PlaylistSelectorUserInterface
 
     private Button CreateDeleteButton()
     {
-        //var deleteButton = new Button()
-        //{
-        //    Content = new FontIcon()
-        //    {
-        //        Glyph = DELETE_UNICODE, FontFamily = "Segoe MDL2 Assets", FontSize = 16,
-        //    },
-        //};
-
-        var button = new Button()
-        {
-            Content = new SymbolIcon(Symbol.Delete),
-        };
+        Button button = ButtonFactory.CreateFontIconButton(ButtonFactory.DELETE_SYMBOL_UNICODE);
+        button.Margin = new Thickness(2);
 
         button.SetBinding(FrameworkElement.TagProperty,
             new Binding {Path = new PropertyPath(nameof(IPlayset.FileName)),});
@@ -159,9 +139,10 @@ public class PlaylistSelectorUserInterface
     {
         return new DataGridTextColumn()
         {
-            Header = "Title",
+            Header = DataGridColumns.PLAYSETS.ToString().ScreamingSnakeCaseToTitleCase(),
             Binding = new Binding {Path = new PropertyPath(nameof(IPlayset.FileName)),},
             Width = new DataGridLength(40, DataGridLengthUnitType.Star),
+            FontSize = 12,
         };
     }
 

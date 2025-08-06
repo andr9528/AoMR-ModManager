@@ -1,3 +1,4 @@
+using ModManager.Extensions;
 using ModManager.Presentation;
 using ModManager.Presentation.Extensions;
 using ModManager.Presentation.Factory;

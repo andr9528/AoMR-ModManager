@@ -170,7 +170,8 @@ public class FileService : IFileService
             string[] files = Directory.GetFiles(PlaysetsLocation, "*.json");
             var modStatuses = await Task.WhenAll(files.Select(LoadModStatus));
 
-            var playsets = files.Select((file, index) => new Playset(Path.GetFileName(file), modStatuses[index]))
+            var playsets = files
+                .Select((file, index) => new Playset(Path.GetFileNameWithoutExtension(file), modStatuses[index]))
                 .ToList<IPlayset>();
 
             return playsets;

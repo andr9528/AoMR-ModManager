@@ -1,4 +1,5 @@
 using ModManager.Abstractions.Services;
+using ModManager.Presentation.Logic;
 using ModManager.Presentation.UserInterface;
 
 namespace ModManager.Presentation;
@@ -14,14 +15,13 @@ public sealed partial class PlaylistSelector : NavigationView
         PaneDisplayMode = NavigationViewPaneDisplayMode.LeftCompact;
         CompactPaneLength = 160;
 
-        DataContext = new PlaylistSelectorViewModel(stateService);
+        DataContext = new ViewModel.PlaylistSelectorViewModel(stateService);
 
         SetBinding(IsPaneOpenProperty,
-            new Binding() {Path = nameof(PlaylistSelectorViewModel.IsMenuOpen), Mode = BindingMode.TwoWay,});
+            new Binding() {Path = nameof(ViewModel.PlaylistSelectorViewModel.IsMenuOpen), Mode = BindingMode.TwoWay,});
 
         var logic = new PlaylistSelectorLogic(fileService, stateService);
-        var ui = new PlaylistSelectorUserInterface(logic, (PlaylistSelectorViewModel) DataContext, fileService,
-            stateService);
+        var ui = new PlaylistSelectorUserInterface(logic, (ViewModel.PlaylistSelectorViewModel) DataContext);
 
         PaneCustomContent = ui.CreateNavigationPanel();
         Content = ui.CreateContentGrid();

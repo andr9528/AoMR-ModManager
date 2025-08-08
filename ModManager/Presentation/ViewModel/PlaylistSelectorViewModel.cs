@@ -1,6 +1,6 @@
 using ModManager.Abstractions.Services;
 
-namespace ModManager.Presentation;
+namespace ModManager.Presentation.ViewModel;
 
 public partial class PlaylistSelectorViewModel : ObservableObject
 {

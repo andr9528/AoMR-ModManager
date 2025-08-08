@@ -12,13 +12,14 @@ public partial class StateService : ObservableObject, IStateService
 {
     private readonly IFileService fileService;
     private readonly ILogger<StateService> logger;
-    [ObservableProperty] private IModStatus currentModStatus;
-    [ObservableProperty] private IPlayset editingPlayset;
+    [ObservableProperty] private IModStatus? currentModStatus;
+    [ObservableProperty] private IPlayset? editingPlayset;
     [ObservableProperty] private bool isPlaysetActive;
     [ObservableProperty] private ObservableCollection<IPlayset> playsets;
 
-    public event EventHandler<IModStatus> CurrentModStatusChanged;
-    public event EventHandler<IPlayset> EditingPlaysetChanged;
+    public event EventHandler<IModStatus?> CurrentModStatusChanged;
+    public event EventHandler<IPlayset?> EditingPlaysetChanged;
+    public event EventHandler<bool> InitializationCompleted;
 
     public StateService(IFileService fileService, ILogger<StateService> logger)
     {
@@ -29,12 +30,12 @@ public partial class StateService : ObservableObject, IStateService
         uiQueue.TryEnqueue(async () => { await InitializeState(); });
     }
 
-    partial void OnCurrentModStatusChanged(IModStatus value)
+    partial void OnCurrentModStatusChanged(IModStatus? value)
     {
         CurrentModStatusChanged?.Invoke(this, value);
     }
 
-    partial void OnEditingPlaysetChanged(IPlayset value)
+    partial void OnEditingPlaysetChanged(IPlayset? value)
     {
         EditingPlaysetChanged?.Invoke(this, value);
     }
@@ -56,6 +57,8 @@ public partial class StateService : ObservableObject, IStateService
             CurrentModStatusChanged += OnCurrentModStatusChanged;
             EditingPlaysetChanged += OnEditingPlaysetChanged;
             ReevaluateIsPlaysetActiveState();
+
+            InitializationCompleted?.Invoke(this, true);
         }
         catch (Exception e)
         {
@@ -64,14 +67,24 @@ public partial class StateService : ObservableObject, IStateService
         }
     }
 
-    private void OnEditingPlaysetChanged(object? sender, IPlayset e)
+    private void OnEditingPlaysetChanged(object? sender, IPlayset? e)
     {
         ReevaluateIsPlaysetActiveState();
     }
 
     private void ReevaluateIsPlaysetActiveState()
     {
+        if (currentModStatus == null)
+        {
+            return;
+        }
+
         var currentMods = currentModStatus.Mods.Where(x => x.Enabled).ToList();
+        if (editingPlayset == null)
+        {
+            return;
+        }
+
         var playsetMods = editingPlayset.ModStatus.Mods.Where(x => x.Enabled).ToList();
 
         IsPlaysetActive = currentMods.Count == playsetMods.Count &&
@@ -84,7 +97,7 @@ public partial class StateService : ObservableObject, IStateService
             playsetMod.Title == currentMod.Title && playsetMod.Priority == currentMod.Priority);
     }
 
-    private void OnCurrentModStatusChanged(object? sender, IModStatus e)
+    private void OnCurrentModStatusChanged(object? sender, IModStatus? e)
     {
         ReevaluateIsPlaysetActiveState();
     }

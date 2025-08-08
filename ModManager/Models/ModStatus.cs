@@ -1,3 +1,4 @@
+using System.Collections.ObjectModel;
 using ModManager.Abstractions.Models;
 using Newtonsoft.Json;
 
@@ -9,13 +10,13 @@ public class ModStatus : IModStatus
     public List<object> Actions { get; set; }
 
     /// <inheritdoc />
-    public List<IMod> Mods { get; set; }
+    public ObservableCollection<IMod> Mods { get; set; }
 
     [JsonConstructor]
     public ModStatus(List<object> actions, List<Mod> mods)
     {
         Actions = actions;
-        Mods = mods.Cast<IMod>().ToList();
+        Mods = new ObservableCollection<IMod>(mods);
     }
 
     public ModStatus()

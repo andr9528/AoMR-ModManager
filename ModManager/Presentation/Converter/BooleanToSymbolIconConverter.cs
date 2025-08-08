@@ -1,6 +1,6 @@
-namespace ModManager.Presentation;
+namespace ModManager.Presentation.Converter;
 
-public class BoolToSymbolIconConverter : IValueConverter
+public class BooleanToSymbolIconConverter : IValueConverter
 {
     // Optional: Use symbols that make sense for your UI state
     public Symbol TrueSymbol { get; set; } = Symbol.ClosePane;

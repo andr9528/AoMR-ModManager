@@ -1,3 +1,4 @@
+using System.Collections.ObjectModel;
 using System.Reflection;
 using ModManager.Abstractions.Models;
 using ModManager.Abstractions.Services;
@@ -242,11 +243,11 @@ public class FileService : IFileService
 
             if (makeEmptyPlayset)
             {
-                clonedModStatus.Mods = clonedModStatus.Mods.Select(mod =>
+                clonedModStatus.Mods = new ObservableCollection<IMod>(clonedModStatus.Mods.Select(mod =>
                 {
                     mod.Hidden = true;
                     return mod;
-                }).ToList();
+                }));
             }
 
             var newPlayset = new Playset(playset.FileName, clonedModStatus);
@@ -271,11 +272,11 @@ public class FileService : IFileService
 
             IModStatus? allOnStatus = FastCloner.FastCloner.DeepClone(currentModStatus) ??
                                       throw new InvalidOperationException($"Failed to Clone the current Mod Status");
-            allOnStatus.Mods = allOnStatus.Mods.Select(mod =>
+            allOnStatus.Mods = new ObservableCollection<IMod>(allOnStatus.Mods.Select(mod =>
             {
                 mod.Enabled = true;
                 return mod;
-            }).ToList();
+            }));
 
             await SavePlayset(new Playset(DEFAULT_ON_PLAYSET_FILE_NAME, allOnStatus));
         }
@@ -298,11 +299,11 @@ public class FileService : IFileService
             IModStatus allOffStatus = FastCloner.FastCloner.DeepClone(currentModStatus) ??
                                       throw new InvalidOperationException($"Failed to Clone the current Mod Status");
 
-            allOffStatus.Mods = allOffStatus.Mods.Select(mod =>
+            allOffStatus.Mods = new ObservableCollection<IMod>(allOffStatus.Mods.Select(mod =>
             {
                 mod.Enabled = false;
                 return mod;
-            }).ToList();
+            }));
 
             await SavePlayset(new Playset(DEFAULT_OFF_PLAYSET_FILE_NAME, allOffStatus));
         }

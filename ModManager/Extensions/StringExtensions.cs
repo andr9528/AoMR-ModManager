@@ -1,4 +1,4 @@
-namespace ModManager.Presentation.Extensions;
+namespace ModManager.Extensions;
 
 public static class StringExtensions
 {

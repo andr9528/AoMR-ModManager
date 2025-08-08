@@ -24,4 +24,9 @@ public interface IMod
     public uint? InstallCrc { get; set; }
 
     public bool Hidden { get; set; }
+
+    [JsonIgnore] public Func<long, bool>? VisibilityResolver { get; set; }
+
+    [JsonIgnore] public bool IsAddModButtonVisible { get; }
+    [JsonIgnore] public bool IsLocalMod { get; }
 }

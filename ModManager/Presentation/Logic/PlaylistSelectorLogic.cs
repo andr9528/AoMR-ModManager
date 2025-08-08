@@ -2,7 +2,7 @@ using CommunityToolkit.WinUI.UI.Controls;
 using ModManager.Abstractions.Models;
 using ModManager.Abstractions.Services;
 
-namespace ModManager.Presentation;
+namespace ModManager.Presentation.Logic;
 
 public class PlaylistSelectorLogic
 {

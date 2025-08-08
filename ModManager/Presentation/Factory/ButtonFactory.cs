@@ -5,6 +5,7 @@ public static class ButtonFactory
     public const string EDIT_SYMBOL_UNICODE = "\uE104";
     public const string DELETE_SYMBOL_UNICODE = "\uE107";
     public const string RENAME_SYMBOL_UNICODE = "\uE8AC";
+    public const string LEFT_ARROW_SYMBOL_UNICODE = "\u2190";
 
     public static Button CreateDefaultButton()
     {

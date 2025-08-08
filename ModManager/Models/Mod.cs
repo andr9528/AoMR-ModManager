@@ -3,8 +3,12 @@ using ModManager.Abstractions.Models;
 
 namespace ModManager.Models;
 
-public class Mod : IMod
+public partial class Mod : ObservableObject, IMod
 {
+    [ObservableProperty] private bool enabled;
+    [ObservableProperty] private bool hidden;
+    [ObservableProperty] private int priority;
+
     /// <inheritdoc />
     public string Title { get; set; }
 
@@ -28,15 +32,18 @@ public class Mod : IMod
     public string InstallTime { get; set; }
 
     /// <inheritdoc />
-    public int Priority { get; set; }
-
-    /// <inheritdoc />
-    public bool Enabled { get; set; }
-
-    /// <inheritdoc />
     [JsonPropertyName(IMod.JSON_PROPERTY_INSTALL_CRC_NAME)]
     public uint? InstallCrc { get; set; }
 
     /// <inheritdoc />
-    public bool Hidden { get; set; }
+    [JsonIgnore]
+    public Func<long, bool>? VisibilityResolver { get; set; }
+
+    /// <inheritdoc />
+    [JsonIgnore]
+    public bool IsAddModButtonVisible => VisibilityResolver?.Invoke(WorkshopId) ?? false;
+
+    /// <inheritdoc />
+    [JsonIgnore]
+    public bool IsLocalMod => Path.Contains($"local", StringComparison.InvariantCultureIgnoreCase);
 }

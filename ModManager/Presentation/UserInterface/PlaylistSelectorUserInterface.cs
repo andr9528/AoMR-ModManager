@@ -1,8 +1,9 @@
 using CommunityToolkit.WinUI.UI.Controls;
 using ModManager.Abstractions.Models;
-using ModManager.Abstractions.Services;
-using ModManager.Presentation.Extensions;
+using ModManager.Extensions;
+using ModManager.Presentation.Converter;
 using ModManager.Presentation.Factory;
+using ModManager.Presentation.Logic;
 
 namespace ModManager.Presentation.UserInterface;
 
@@ -17,14 +18,12 @@ public class PlaylistSelectorUserInterface
     }
 
     private readonly PlaylistSelectorLogic logic;
-    private readonly PlaylistSelectorViewModel dataContext;
+    private readonly ViewModel.PlaylistSelectorViewModel viewModel;
 
-    public PlaylistSelectorUserInterface(
-        PlaylistSelectorLogic logic, PlaylistSelectorViewModel dataContext, IFileService fileService,
-        IStateService stateService)
+    public PlaylistSelectorUserInterface(PlaylistSelectorLogic logic, ViewModel.PlaylistSelectorViewModel viewModel)
     {
         this.logic = logic;
-        this.dataContext = dataContext;
+        this.viewModel = viewModel;
     }
 
     public StackPanel CreateNavigationPanel()
@@ -48,39 +47,40 @@ public class PlaylistSelectorUserInterface
     {
         Button button = ButtonFactory.CreateDefaultButton();
         button.HorizontalAlignment = HorizontalAlignment.Left;
-        var converter = new BoolToSymbolIconConverter() {TrueSymbol = Symbol.OpenPane, FalseSymbol = Symbol.ClosePane,};
+        var converter = new BooleanToSymbolIconConverter()
+            {TrueSymbol = Symbol.OpenPane, FalseSymbol = Symbol.ClosePane,};
         button.SetBinding(ContentControl.ContentProperty,
-            new Binding() {Path = new PropertyPath(nameof(dataContext.IsMenuOpen)), Converter = converter,});
+            new Binding() {Path = new PropertyPath(nameof(viewModel.IsMenuOpen)), Converter = converter,});
 
-        button.Click += (sender, args) => dataContext.IsMenuOpen = !dataContext.IsMenuOpen;
+        button.Click += (sender, args) => viewModel.IsMenuOpen = !viewModel.IsMenuOpen;
         return button;
     }
 
     private DataGrid CreateDataGrid()
     {
         var columns = Enum.GetValues<DataGridColumns>().Select(BuildColumn).ToList();
-        DataGrid dataGrid = DataGridFactory.CreateDataGrid(dataContext,
-            $"{nameof(dataContext.StateService)}.{nameof(dataContext.StateService.Playsets)}", columns);
+        DataGrid dataGrid = DataGridFactory.CreateDataGrid(viewModel,
+            $"{nameof(viewModel.StateService)}.{nameof(viewModel.StateService.Playsets)}", columns);
 
         dataGrid.SelectionMode = DataGridSelectionMode.Single;
         dataGrid.AddHandler(UIElement.PointerPressedEvent, new PointerEventHandler(logic.DataGridPreviewPointerPressed),
             true);
 
-        dataContext.IsMenuOpenChanged += (sender, e) => logic.UpdateDataGridColumnVisibility(e, dataGrid);
-        logic.UpdateDataGridColumnVisibility(dataContext.IsMenuOpen, dataGrid);
+        viewModel.IsMenuOpenChanged += (sender, e) => logic.UpdateDataGridColumnVisibility(e, dataGrid);
+        logic.UpdateDataGridColumnVisibility(viewModel.IsMenuOpen, dataGrid);
 
         dataGrid.SelectionChanged += logic.DataGridRowSelectionChanged;
 
         return dataGrid;
     }
 
-    private DataGridColumn BuildColumn(DataGridColumns dataGridColumns)
+    private DataGridColumn BuildColumn(DataGridColumns column)
     {
-        return dataGridColumns switch
+        return column switch
         {
             DataGridColumns.PLAYSETS => BuildTitleColumn(),
             DataGridColumns.ACTIONS => BuildActionsColumn(),
-            var _ => throw new ArgumentOutOfRangeException(nameof(dataGridColumns), dataGridColumns, null),
+            var _ => throw new ArgumentOutOfRangeException(nameof(column), column, null),
         };
     }
 
@@ -149,6 +149,11 @@ public class PlaylistSelectorUserInterface
     public Grid CreateContentGrid()
     {
         Grid grid = GridFactory.CreateDefaultGrid();
+        grid.DefineColumns(sizes: [60, 40,]).DefineRows(sizes: [80, 20,]);
+
+        var currentStatus = ActivatorUtilities.CreateInstance<CurrentStatusDisplayer>(App.Startup.ServiceProvider);
+
+        grid.Children.Add(currentStatus.SetRow(0).SetColumn(1));
 
         return grid;
     }

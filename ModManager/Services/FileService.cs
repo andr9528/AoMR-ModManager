@@ -207,7 +207,7 @@ public class FileService : IFileService
                     {
                         IMod clonedMod = FastCloner.FastCloner.DeepClone(mod) ??
                                          throw new InvalidOperationException($"Failed to Clone the mod: {mod.Title}");
-                        clonedMod.Hidden = true;
+                        clonedMod.IsHidden = true;
                         playset.ModStatus.Mods.Add(clonedMod);
                         continue;
                     }
@@ -245,7 +245,7 @@ public class FileService : IFileService
             {
                 clonedModStatus.Mods = new ObservableCollection<IMod>(clonedModStatus.Mods.Select(mod =>
                 {
-                    mod.Hidden = true;
+                    mod.IsHidden = true;
                     return mod;
                 }));
             }
@@ -274,7 +274,7 @@ public class FileService : IFileService
                                       throw new InvalidOperationException($"Failed to Clone the current Mod Status");
             allOnStatus.Mods = new ObservableCollection<IMod>(allOnStatus.Mods.Select(mod =>
             {
-                mod.Enabled = true;
+                mod.IsEnabled = true;
                 return mod;
             }));
 
@@ -301,7 +301,7 @@ public class FileService : IFileService
 
             allOffStatus.Mods = new ObservableCollection<IMod>(allOffStatus.Mods.Select(mod =>
             {
-                mod.Enabled = false;
+                mod.IsEnabled = false;
                 return mod;
             }));
 

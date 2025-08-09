@@ -1,11 +1,11 @@
 using CommunityToolkit.WinUI.UI.Controls;
-using CommunityToolkit.WinUI.UI.Controls.Primitives;
 using ModManager.Abstractions.Models;
 using ModManager.Extensions;
 using ModManager.Presentation.Converter;
 using ModManager.Presentation.Factory;
 using ModManager.Presentation.Logic;
 using ModManager.Presentation.ViewModel;
+using Uno.Toolkit.WinUI.Markup;
 
 namespace ModManager.Presentation.UserInterface;
 
@@ -124,12 +124,12 @@ public class CurrentStatusDisplayerUserInterface
 
     private Button CreateAddModButton()
     {
-        Button button = ButtonFactory.CreateFontIconButton(ButtonFactory.LEFT_ARROW_SYMBOL_UNICODE);
+        Button button = ButtonFactory.CreateFontIconButton(ButtonFactory.LEFT_ARROW_SYMBOL_UNICODE)
+            .ApplyFilledButtonStyle().ApplyDisabledButtonStyle();
 
-        var visibilityBinding = new Binding()
+        var enabledBinding = new Binding()
         {
-            Path = nameof(IMod.IsAddModButtonVisible),
-            Converter = new BooleanToVisibilityConverter(),
+            Path = nameof(IMod.IsHiddenSibling),
         };
 
         var tagBinding = new Binding
@@ -137,7 +137,7 @@ public class CurrentStatusDisplayerUserInterface
             Path = nameof(IMod.WorkshopId),
         };
 
-        button.SetBinding(UIElement.VisibilityProperty, visibilityBinding);
+        button.SetBinding(Control.IsEnabledProperty, enabledBinding);
         button.SetBinding(FrameworkElement.TagProperty, tagBinding);
 
         button.Click += logic.AddModClicked;

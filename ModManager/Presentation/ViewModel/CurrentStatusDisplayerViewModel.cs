@@ -1,5 +1,6 @@
 using ModManager.Abstractions.Models;
 using ModManager.Abstractions.Services;
+using ModManager.Presentation.Core;
 
 namespace ModManager.Presentation.ViewModel;
 
@@ -11,24 +12,43 @@ public class CurrentStatusDisplayerViewModel
     {
         StateService = stateService;
 
-        StateService.CurrentModStatusChanged += BindVisibilityResolver;
         StateService.InitializationCompleted += StateService_InitializationCompleted;
+        StateService.EditingPlaysetChanged += StateService_EditingPlaysetChanged;
+    }
+
+    private void StateService_EditingPlaysetChanged(object? sender, IPlayset? e)
+    {
+        UpdateButtonEnabledSibling();
+    }
+
+    private void UpdateButtonEnabledSibling()
+    {
+        StateService.EditingPlayset?.ModStatus.Mods.ForEach(mod =>
+        {
+            mod.IsHiddenChanged -= Mod_HiddenChanged;
+            mod.IsHiddenChanged += Mod_HiddenChanged;
+        });
     }
 
     private void StateService_InitializationCompleted(object? sender, bool e)
     {
-        StateService.CurrentModStatus?.Mods.ForEach(x => x.VisibilityResolver = IsAddModButtonVisible);
+        UpdateButtonEnabledSibling();
     }
 
-    private void BindVisibilityResolver(object? sender, IModStatus? newCurrentModStatus)
+    private void Mod_HiddenChanged(object? sender, bool e)
     {
-        newCurrentModStatus?.Mods.ForEach(x => x.VisibilityResolver = IsAddModButtonVisible);
-    }
+        if (sender is not IMod mod)
+        {
+            return;
+        }
 
+        IMod? currentMod = StateService.CurrentModStatus?.Mods.FirstOrDefault(x => x.WorkshopId == mod.WorkshopId);
 
-    private bool IsAddModButtonVisible(long workshopId)
-    {
-        return StateService.EditingPlayset?.ModStatus.Mods.FirstOrDefault(x => x.WorkshopId == workshopId)?.Hidden ??
-               false;
+        if (currentMod == null)
+        {
+            return;
+        }
+
+        currentMod.IsHiddenSibling = mod.IsHidden;
     }
 }

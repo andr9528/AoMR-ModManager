@@ -1,13 +1,20 @@
 using System.Text.Json.Serialization;
 using ModManager.Abstractions.Models;
+using Newtonsoft.Json;
 
 namespace ModManager.Models;
 
 public partial class Mod : ObservableObject, IMod
 {
-    [ObservableProperty] private bool enabled;
-    [ObservableProperty] private bool hidden;
+    [ObservableProperty] [JsonProperty(IMod.JSON_PROPERTY_ENABLED_NAME)]
+    private bool isEnabled;
+
+    [ObservableProperty] private bool isHidden;
+    [ObservableProperty] private bool isHiddenSibling;
     [ObservableProperty] private int priority;
+
+    public event EventHandler<bool> IsHiddenChanged;
+    public event EventHandler<bool> IsHiddenSiblingChanged;
 
     /// <inheritdoc />
     public string Title { get; set; }
@@ -22,7 +29,7 @@ public partial class Mod : ObservableObject, IMod
     public string Path { get; set; }
 
     /// <inheritdoc />
-    [JsonPropertyName(IMod.JSON_PROPERTY_WORKSHOP_ID_NAME)]
+    [JsonProperty(IMod.JSON_PROPERTY_WORKSHOP_ID_NAME)]
     public long WorkshopId { get; set; }
 
     /// <inheritdoc />
@@ -32,18 +39,20 @@ public partial class Mod : ObservableObject, IMod
     public string InstallTime { get; set; }
 
     /// <inheritdoc />
-    [JsonPropertyName(IMod.JSON_PROPERTY_INSTALL_CRC_NAME)]
+    [JsonProperty(IMod.JSON_PROPERTY_INSTALL_CRC_NAME)]
     public uint? InstallCrc { get; set; }
 
     /// <inheritdoc />
-    [JsonIgnore]
-    public Func<long, bool>? VisibilityResolver { get; set; }
-
-    /// <inheritdoc />
-    [JsonIgnore]
-    public bool IsAddModButtonVisible => VisibilityResolver?.Invoke(WorkshopId) ?? false;
-
-    /// <inheritdoc />
-    [JsonIgnore]
+    [Newtonsoft.Json.JsonIgnore]
     public bool IsLocalMod => Path.Contains($"local", StringComparison.InvariantCultureIgnoreCase);
+
+    partial void OnIsHiddenChanged(bool oldValue, bool newValue)
+    {
+        IsHiddenChanged?.Invoke(this, newValue);
+    }
+
+    partial void OnIsHiddenSiblingChanged(bool oldValue, bool newValue)
+    {
+        IsHiddenSiblingChanged?.Invoke(this, newValue);
+    }
 }

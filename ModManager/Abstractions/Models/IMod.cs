@@ -6,6 +6,10 @@ public interface IMod
 {
     public const string JSON_PROPERTY_WORKSHOP_ID_NAME = "WorkshopID";
     public const string JSON_PROPERTY_INSTALL_CRC_NAME = "InstallCRC";
+    public const string JSON_PROPERTY_ENABLED_NAME = "Enabled";
+
+    public event EventHandler<bool> IsHiddenChanged;
+    public event EventHandler<bool> IsHiddenSiblingChanged;
 
     public string Title { get; set; }
     public string Author { get; set; }
@@ -18,15 +22,14 @@ public interface IMod
     public string LastUpdate { get; set; }
     public string InstallTime { get; set; }
     public int Priority { get; set; }
-    public bool Enabled { get; set; }
+
+    [JsonPropertyName(JSON_PROPERTY_ENABLED_NAME)] public bool IsEnabled { get; set; }
 
     [JsonPropertyName(JSON_PROPERTY_INSTALL_CRC_NAME)]
     public uint? InstallCrc { get; set; }
 
-    public bool Hidden { get; set; }
+    public bool IsHidden { get; set; }
 
-    [JsonIgnore] public Func<long, bool>? VisibilityResolver { get; set; }
-
-    [JsonIgnore] public bool IsAddModButtonVisible { get; }
     [JsonIgnore] public bool IsLocalMod { get; }
+    [JsonIgnore] public bool IsHiddenSibling { get; set; }
 }

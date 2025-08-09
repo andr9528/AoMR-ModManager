@@ -79,13 +79,13 @@ public partial class StateService : ObservableObject, IStateService
             return;
         }
 
-        var currentMods = currentModStatus.Mods.Where(x => x.Enabled).ToList();
+        var currentMods = currentModStatus.Mods.Where(x => x.IsEnabled).ToList();
         if (editingPlayset == null)
         {
             return;
         }
 
-        var playsetMods = editingPlayset.ModStatus.Mods.Where(x => x.Enabled).ToList();
+        var playsetMods = editingPlayset.ModStatus.Mods.Where(x => x.IsEnabled).ToList();
 
         IsPlaysetActive = currentMods.Count == playsetMods.Count &&
                           currentMods.All(currentMod => DoesPlaysetModsHaveMod(currentMod, playsetMods));

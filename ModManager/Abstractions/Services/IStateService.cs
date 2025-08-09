@@ -11,5 +11,6 @@ public interface IStateService
     bool IsPlaysetActive { get; set; }
 
     public event EventHandler<IModStatus?> CurrentModStatusChanged;
+    public event EventHandler<IPlayset?> EditingPlaysetChanged;
     public event EventHandler<bool> InitializationCompleted;
 }

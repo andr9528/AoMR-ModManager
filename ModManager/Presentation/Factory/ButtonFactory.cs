@@ -32,4 +32,20 @@ public static class ButtonFactory
 
         return button;
     }
+
+    public static Button ApplyFilledButtonStyle(this Button button)
+    {
+        button.Background = new SolidColorBrush(Colors.DarkGreen);
+        button.Foreground = new SolidColorBrush(Colors.Black);
+        button.BorderBrush = new SolidColorBrush(Colors.Black);
+        return button;
+    }
+
+    public static Button ApplyDisabledButtonStyle(this Button button)
+    {
+        button.Resources.Add("ButtonBackgroundDisabled", new SolidColorBrush(Colors.DarkRed));
+        button.Resources.Add("ButtonForegroundDisabled", new SolidColorBrush(Colors.Orange));
+        button.Resources.Add("ButtonBorderBrushDisabled", new SolidColorBrush(Colors.Teal));
+        return button;
+    }
 }

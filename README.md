@@ -4,7 +4,7 @@ A Tool to manage Mods for Age of Mythology Retold
 
 ## Installation
 
-To install this tool, download the file that fits your operating system, e.g '.exe' for Windows, and place it in the '/mods/' folder of your 'Age of Mythology Retold' installation.
+To install this tool, download the file from [releases](https://github.com/andr9528/AoMR-ModManager/releases) that fits your operating system, e.g '.exe' for Windows, and place it in the '/mods/' folder of your 'Age of Mythology Retold' installation.
 
 Make sure there is a 'myth-mod-status.json' in that folder.
 Age of Mythology Retold should have generated it, if you have done anything with mods before, otherwise find a mod you like and download it, that should at the very least generate it.

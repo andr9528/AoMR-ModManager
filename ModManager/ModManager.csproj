@@ -15,7 +15,7 @@
     <!-- Package Publisher -->
     <ApplicationPublisher>andre</ApplicationPublisher>
     <!-- Package Description -->
-    <Description>ModManager powered by Uno Platform.</Description>
+    <Description>Age of Mythology Retold Mod Manager powered by Uno Platform.</Description>
 
     <!--
       UnoFeatures let's you quickly add and manage implicit package references based on the features you want to use.
@@ -34,6 +34,31 @@
       Localization;
       ThemeService;
     </UnoFeatures>
+
+    <!-- Single-file publish defaults -->
+    <PublishSingleFile>true</PublishSingleFile>
+    <SelfContained>true</SelfContained>
+    <PublishTrimmed>true</PublishTrimmed>
+    <PublishReadyToRun>true</PublishReadyToRun>
+    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+  </PropertyGroup>
+
+  <!-- Windows -->
+  <!-- dotnet publish -c Release -r win‑x64 -->
+  <PropertyGroup Condition="'$(RuntimeIdentifier)'=='win‑x64'">
+    <RuntimeIdentifier>win‑x64</RuntimeIdentifier>
+  </PropertyGroup>
+
+  <!-- macOS -->
+  <!-- dotnet publish -c Release -r osx‑x64 -->
+  <PropertyGroup Condition="'$(RuntimeIdentifier)'=='osx‑x64'">
+    <RuntimeIdentifier>osx‑x64</RuntimeIdentifier>
+  </PropertyGroup>
+
+  <!-- Linux -->
+  <!-- dotnet publish -c Release -r linux‑x64 -->
+  <PropertyGroup Condition="'$(RuntimeIdentifier)'=='linux‑x64'">
+    <RuntimeIdentifier>linux‑x64</RuntimeIdentifier>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)'=='Debug' or '$(IsUiAutomationMappingEnabled)'=='True'">

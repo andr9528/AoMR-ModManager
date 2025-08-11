@@ -2,7 +2,6 @@ namespace ModManager.Presentation.Converter;
 
 public class BooleanToSymbolIconConverter : IValueConverter
 {
-    // Optional: Use symbols that make sense for your UI state
     public Symbol TrueSymbol { get; set; } = Symbol.ClosePane;
     public Symbol FalseSymbol { get; set; } = Symbol.OpenPane;
 
@@ -14,7 +13,7 @@ public class BooleanToSymbolIconConverter : IValueConverter
             return boolValue ? new SymbolIcon(TrueSymbol) : new SymbolIcon(FalseSymbol);
         }
 
-        return FalseSymbol;
+        return new SymbolIcon(FalseSymbol);
     }
 
     /// <inheritdoc />

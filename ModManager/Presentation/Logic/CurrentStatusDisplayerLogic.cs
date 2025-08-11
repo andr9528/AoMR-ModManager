@@ -53,68 +53,25 @@ public class CurrentStatusDisplayerLogic
         {
             return;
         }
-
-        UpdateButtonAppearance(dataGrid, e.Row, mod);
-        UpdateRowColor(e.Row, mod);
     }
 
-    private void UpdateButtonAppearance(DataGrid dataGrid, DataGridRow row, IMod mod)
+    public void EnabledIndicatorButtonClicked(object sender, RoutedEventArgs e)
     {
-        return;
-        FrameworkElement? cell = dataGrid.Columns.First().GetCellContent(row);
-        var button = cell?.FindDescendantOfType<Button>();
-
-        if (button == null)
+        if (sender is not Button button)
         {
             return;
         }
 
-        // Unsubscribe any previous handler if exists
-        if (siblingEventHandlers.TryGetValue(mod, out var oldHandler))
+        if (button.Tag is not long workshopId)
         {
-            mod.IsHiddenSiblingChanged -= oldHandler;
+            return;
         }
 
-        // Create and store a new named handler
-        EventHandler<bool> handler = (sender, enabled) => UpdateButtonStyle(button, enabled);
-        siblingEventHandlers[mod] = handler;
-        mod.IsHiddenSiblingChanged += handler;
+        IMod? mod = stateService.CurrentModStatus?.Mods.FirstOrDefault(x => x.WorkshopId == workshopId);
 
-        // Apply current style immediately
-        UpdateButtonStyle(button, mod.IsHiddenSibling);
-    }
-
-    private void UpdateButtonStyle(Button button, bool enabled)
-    {
-        if (enabled)
+        if (mod != null)
         {
-            button.Background = new SolidColorBrush(Colors.Black);
-            button.Foreground = new SolidColorBrush(Colors.White);
+            mod.IsEnabled = !mod.IsEnabled;
         }
-        else
-        {
-            button.Background = new SolidColorBrush(Colors.DarkGray);
-            button.Foreground = new SolidColorBrush(Colors.LightGray);
-        }
-    }
-
-    private void UpdateRowColor(DataGridRow row, IMod mod)
-    {
-        return;
-        Color enabledColor = Colors.LimeGreen.WithAlpha(0.4);
-        Color disabledColor = Colors.IndianRed.WithAlpha(0.4);
-        //Color localColor = Colors.LightBlue;
-
-        //if (mod.IsLocalMod)
-        //{
-        //    Color localEnabledColor = localColor.LerpColors(enabledColor, 0.4);
-        //    Color localDisabledColor = localColor.LerpColors(disabledColor, 0.4);
-        //    row.Background = mod.IsEnabled
-        //        ? new SolidColorBrush(localEnabledColor)
-        //        : new SolidColorBrush(localDisabledColor);
-        //    return;
-        //}
-
-        row.Background = mod.IsEnabled ? new SolidColorBrush(enabledColor) : new SolidColorBrush(disabledColor);
     }
 }

@@ -15,6 +15,7 @@ public class CurrentStatusDisplayerUserInterface
     {
         ACTIONS = 0,
         MODS = 1,
+        INDICATORS = 2,
     }
 
     private readonly CurrentStatusDisplayerLogic logic;
@@ -80,9 +81,108 @@ public class CurrentStatusDisplayerUserInterface
         {
             DataGridColumns.ACTIONS => BuildActionsColumn(),
             DataGridColumns.MODS => BuildModsColumn(),
+            DataGridColumns.INDICATORS => BuildIndicatorsColumn(),
             var _ => throw new ArgumentOutOfRangeException(nameof(column), column, null),
         };
     }
+
+    private DataGridTemplateColumn BuildIndicatorsColumn()
+    {
+        var template = new DataTemplate(BuildIndicatorsTemplate);
+
+        return new DataGridTemplateColumn()
+        {
+            Header = DataGridColumns.INDICATORS.ToString().ScreamingSnakeCaseToTitleCase(),
+            CellTemplate = template,
+            Width = new DataGridLength(30, DataGridLengthUnitType.Star),
+        };
+    }
+
+    private StackPanel? BuildIndicatorsTemplate()
+    {
+        var panel = new StackPanel
+        {
+            Orientation = Orientation.Horizontal,
+        };
+
+        Button enabledIndicatorButton = CreateEnabledIndicatorButton();
+        Button localIndicatorButton = CreateLocalIndicatorButton();
+
+        panel.Children.Add(enabledIndicatorButton);
+        panel.Children.Add(localIndicatorButton);
+
+        return panel;
+    }
+
+    private Button CreateLocalIndicatorButton()
+    {
+        Button button = ButtonFactory.CreateDefaultButton();
+        button.IsHitTestVisible = false;
+
+        var contentBinding = new Binding()
+        {
+            Path = nameof(IMod.IsLocalMod),
+            Converter = new BooleanToFontIconConverter()
+            {
+                TrueGlyph = ButtonFactory.FOLDER_SYMBOL_UNICODE,
+                FalseGlyph = ButtonFactory.CLOUD_SYMBOL_UNICODE,
+            },
+        };
+
+        var backgroundBinding = new Binding()
+        {
+            Path = nameof(IMod.IsLocalMod),
+            Converter = new BooleanToBrushConverter()
+            {
+                TrueBrush = new SolidColorBrush(Colors.LimeGreen.WithAlpha(0.4)),
+                FalseBrush = new SolidColorBrush(Colors.IndianRed.WithAlpha(0.4)),
+            },
+        };
+
+        button.SetBinding(ContentControl.ContentProperty, contentBinding);
+        button.SetBinding(FrameworkElement.BackgroundProperty, backgroundBinding);
+
+        return button;
+    }
+
+    private Button CreateEnabledIndicatorButton()
+    {
+        Button button = ButtonFactory.CreateDefaultButton();
+
+        var contentBinding = new Binding()
+        {
+            Path = nameof(IMod.IsEnabled),
+            Converter = new BooleanToFontIconConverter()
+            {
+                TrueGlyph = ButtonFactory.CHECKMARK_SYMBOL_UNICODE,
+                FalseGlyph = ButtonFactory.CROSS_SYMBOL_UNICODE,
+            },
+        };
+
+        var backgroundBinding = new Binding()
+        {
+            Path = nameof(IMod.IsEnabled),
+            Converter = new BooleanToBrushConverter()
+            {
+                TrueBrush = new SolidColorBrush(Colors.LimeGreen.WithAlpha(0.4)),
+                FalseBrush = new SolidColorBrush(Colors.IndianRed.WithAlpha(0.4)),
+            },
+        };
+
+        var tagBinding = new Binding
+        {
+            Path = nameof(IMod.WorkshopId),
+        };
+
+        button.SetBinding(ContentControl.ContentProperty, contentBinding);
+        button.SetBinding(FrameworkElement.BackgroundProperty, backgroundBinding);
+        button.SetBinding(FrameworkElement.TagProperty, tagBinding);
+
+        button.Click += logic.EnabledIndicatorButtonClicked;
+
+        return button;
+    }
+
 
     private DataGridTextColumn BuildModsColumn()
     {
@@ -124,12 +224,21 @@ public class CurrentStatusDisplayerUserInterface
 
     private Button CreateAddModButton()
     {
-        Button button = ButtonFactory.CreateFontIconButton(ButtonFactory.LEFT_ARROW_SYMBOL_UNICODE)
-            .ApplyFilledButtonStyle().ApplyDisabledButtonStyle();
+        Button button = ButtonFactory.CreateFontIconButton(ButtonFactory.LEFT_ARROW_SYMBOL_UNICODE);
 
-        var enabledBinding = new Binding()
+        var hitTestBinding = new Binding()
         {
             Path = nameof(IMod.IsHiddenSibling),
+        };
+
+        var backgroundBinding = new Binding()
+        {
+            Path = nameof(IMod.IsHiddenSibling),
+            Converter = new BooleanToBrushConverter()
+            {
+                TrueBrush = new SolidColorBrush(Colors.Teal),
+                FalseBrush = new SolidColorBrush(Colors.Gray.WithAlpha(0.4)),
+            },
         };
 
         var tagBinding = new Binding
@@ -137,7 +246,8 @@ public class CurrentStatusDisplayerUserInterface
             Path = nameof(IMod.WorkshopId),
         };
 
-        button.SetBinding(Control.IsEnabledProperty, enabledBinding);
+        button.SetBinding(UIElement.IsHitTestVisibleProperty, hitTestBinding);
+        button.SetBinding(FrameworkElement.BackgroundProperty, backgroundBinding);
         button.SetBinding(FrameworkElement.TagProperty, tagBinding);
 
         button.Click += logic.AddModClicked;

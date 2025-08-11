@@ -6,16 +6,24 @@ public static class ButtonFactory
     public const string DELETE_SYMBOL_UNICODE = "\uE107";
     public const string RENAME_SYMBOL_UNICODE = "\uE8AC";
     public const string LEFT_ARROW_SYMBOL_UNICODE = "\u2190";
+    public const string CHECKMARK_SYMBOL_UNICODE = "\uE8FB";
+    public const string CROSS_SYMBOL_UNICODE = "\uE8BB";
+    public const string FOLDER_SYMBOL_UNICODE = "\uE8B7";
+    public const string CLOUD_SYMBOL_UNICODE = "\uE753";
 
     public static Button CreateDefaultButton()
     {
-        return new Button
+        var button = new Button
         {
             Margin = new Thickness(10),
             Padding = new Thickness(10, 5, 10, 5),
             HorizontalAlignment = HorizontalAlignment.Center,
             VerticalAlignment = VerticalAlignment.Center,
         };
+
+        button.Style(Theme.Button.Styles.Filled);
+
+        return button;
     }
 
     public static Button CreateFontIconButton(string glyphUnicode, int fontSize = 12)
@@ -30,22 +38,6 @@ public static class ButtonFactory
 
         button.Content = icon;
 
-        return button;
-    }
-
-    public static Button ApplyFilledButtonStyle(this Button button)
-    {
-        button.Background = new SolidColorBrush(Colors.DarkGreen);
-        button.Foreground = new SolidColorBrush(Colors.Black);
-        button.BorderBrush = new SolidColorBrush(Colors.Black);
-        return button;
-    }
-
-    public static Button ApplyDisabledButtonStyle(this Button button)
-    {
-        button.Resources.Add("ButtonBackgroundDisabled", new SolidColorBrush(Colors.DarkRed));
-        button.Resources.Add("ButtonForegroundDisabled", new SolidColorBrush(Colors.Orange));
-        button.Resources.Add("ButtonBorderBrushDisabled", new SolidColorBrush(Colors.Teal));
         return button;
     }
 }

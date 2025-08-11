@@ -44,7 +44,9 @@ public partial class StateService : ObservableObject, IStateService
     {
         try
         {
-            CurrentModStatus = await fileService.GetCurrentModStatus();
+            IModStatus status = await fileService.GetCurrentModStatus();
+            status.Mods = new ObservableCollection<IMod>(status.Mods.OrderBy(x => x.Priority).ToList());
+            CurrentModStatus = status;
 
             await fileService.CreateDefaultPlaysetsIfNotExists(CurrentModStatus);
 
@@ -52,11 +54,20 @@ public partial class StateService : ObservableObject, IStateService
 
             await fileService.UpdatePlaysetsProperties(CurrentModStatus, Playsets);
 
-            EditingPlayset = Playsets.First();
+            IPlayset playset = Playsets.First();
+            playset.ModStatus.Mods =
+                new ObservableCollection<IMod>(playset.ModStatus.Mods.OrderBy(x => x.Priority).ToList());
+            EditingPlayset = playset;
 
             CurrentModStatusChanged += OnCurrentModStatusChanged;
             EditingPlaysetChanged += OnEditingPlaysetChanged;
             ReevaluateIsPlaysetActiveState();
+
+            CurrentModStatus?.Mods.ForEach(mod =>
+            {
+                mod.IsEnabledChanged -= ModOnIsEnabledChanged;
+                mod.IsEnabledChanged += ModOnIsEnabledChanged;
+            });
 
             InitializationCompleted?.Invoke(this, true);
         }
@@ -70,6 +81,20 @@ public partial class StateService : ObservableObject, IStateService
     private void OnEditingPlaysetChanged(object? sender, IPlayset? e)
     {
         ReevaluateIsPlaysetActiveState();
+
+        if (EditingPlayset == null)
+        {
+            return;
+        }
+
+        EditingPlaysetChanged -= OnEditingPlaysetChanged;
+
+        IPlayset? playset = EditingPlayset;
+        playset.ModStatus.Mods =
+            new ObservableCollection<IMod>(playset.ModStatus.Mods.OrderBy(x => x.Priority).ToList());
+        EditingPlayset = playset;
+
+        EditingPlaysetChanged += OnEditingPlaysetChanged;
     }
 
     private void ReevaluateIsPlaysetActiveState()
@@ -100,5 +125,31 @@ public partial class StateService : ObservableObject, IStateService
     private void OnCurrentModStatusChanged(object? sender, IModStatus? e)
     {
         ReevaluateIsPlaysetActiveState();
+
+        if (CurrentModStatus == null)
+        {
+            return;
+        }
+
+        CurrentModStatusChanged -= OnCurrentModStatusChanged;
+
+        IModStatus status = CurrentModStatus;
+        status.Mods = new ObservableCollection<IMod>(status.Mods.OrderBy(x => x.Priority).ToList());
+        CurrentModStatus = status;
+
+        CurrentModStatusChanged += OnCurrentModStatusChanged;
+
+        CurrentModStatus?.Mods.ForEach(mod =>
+        {
+            mod.IsEnabledChanged -= ModOnIsEnabledChanged;
+            mod.IsEnabledChanged += ModOnIsEnabledChanged;
+        });
+    }
+
+    private void ModOnIsEnabledChanged(object? sender, bool e)
+    {
+        ReevaluateIsPlaysetActiveState();
+
+        fileService.SaveModStatusChanges(CurrentModStatus);
     }
 }

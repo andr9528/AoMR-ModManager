@@ -1,20 +1,23 @@
-using System.Text.Json.Serialization;
 using ModManager.Abstractions.Models;
 using Newtonsoft.Json;
+
+// They are valid, as code would throw exception without them.
+#pragma warning disable CS0657 // Not a valid attribute location for this declaration
 
 namespace ModManager.Models;
 
 public partial class Mod : ObservableObject, IMod
 {
-    [ObservableProperty] [JsonProperty(IMod.JSON_PROPERTY_ENABLED_NAME)]
+    [ObservableProperty] [property: JsonProperty(IMod.JSON_PROPERTY_ENABLED_NAME)]
     private bool isEnabled;
 
     [ObservableProperty] private bool isHidden;
-    [ObservableProperty] private bool isHiddenSibling;
+    [ObservableProperty] [property: JsonIgnore] private bool isHiddenSibling;
     [ObservableProperty] private int priority;
 
     public event EventHandler<bool> IsHiddenChanged;
     public event EventHandler<bool> IsHiddenSiblingChanged;
+    public event EventHandler<bool> IsEnabledChanged;
 
     /// <inheritdoc />
     public string Title { get; set; }
@@ -43,7 +46,7 @@ public partial class Mod : ObservableObject, IMod
     public uint? InstallCrc { get; set; }
 
     /// <inheritdoc />
-    [Newtonsoft.Json.JsonIgnore]
+    [JsonIgnore]
     public bool IsLocalMod => Path.Contains($"local", StringComparison.InvariantCultureIgnoreCase);
 
     partial void OnIsHiddenChanged(bool oldValue, bool newValue)
@@ -54,5 +57,10 @@ public partial class Mod : ObservableObject, IMod
     partial void OnIsHiddenSiblingChanged(bool oldValue, bool newValue)
     {
         IsHiddenSiblingChanged?.Invoke(this, newValue);
+    }
+
+    partial void OnIsEnabledChanged(bool oldValue, bool newValue)
+    {
+        IsEnabledChanged?.Invoke(this, newValue);
     }
 }

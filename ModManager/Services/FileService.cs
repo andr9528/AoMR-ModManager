@@ -70,11 +70,7 @@ public class FileService : IFileService
     {
         try
         {
-            string jsonPath = GetModStatusFilePath();
-
-            string content = JsonConvert.SerializeObject(playset, Formatting.Indented);
-
-            await File.WriteAllTextAsync(jsonPath, content);
+            await SaveModStatusChanges(playset.ModStatus);
         }
         catch (Exception e)
         {
@@ -257,6 +253,24 @@ public class FileService : IFileService
         catch (Exception e)
         {
             logger.LogError(e, "Failed to create new playset: {PlaysetName}", playset.FileName);
+            throw;
+        }
+    }
+
+    /// <inheritdoc />
+    public async Task SaveModStatusChanges(IModStatus? modStatus)
+    {
+        try
+        {
+            string jsonPath = GetModStatusFilePath();
+
+            string content = JsonConvert.SerializeObject(modStatus, Formatting.Indented);
+
+            await File.WriteAllTextAsync(jsonPath, content);
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Failed to save Mod Status");
             throw;
         }
     }

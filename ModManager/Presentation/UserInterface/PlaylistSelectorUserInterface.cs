@@ -47,10 +47,18 @@ public class PlaylistSelectorUserInterface
     {
         Button button = ButtonFactory.CreateDefaultButton();
         button.HorizontalAlignment = HorizontalAlignment.Left;
-        var converter = new BooleanToSymbolIconConverter()
-            {TrueSymbol = Symbol.OpenPane, FalseSymbol = Symbol.ClosePane,};
-        button.SetBinding(ContentControl.ContentProperty,
-            new Binding() {Path = new PropertyPath(nameof(viewModel.IsMenuOpen)), Converter = converter,});
+
+        var binding = new Binding()
+        {
+            Path = nameof(viewModel.IsMenuOpen),
+            Converter = new BooleanToSymbolIconConverter()
+            {
+                TrueSymbol = Symbol.OpenPane,
+                FalseSymbol = Symbol.ClosePane,
+            },
+        };
+
+        button.SetBinding(ContentControl.ContentProperty, binding);
 
         button.Click += (sender, args) => viewModel.IsMenuOpen = !viewModel.IsMenuOpen;
         return button;

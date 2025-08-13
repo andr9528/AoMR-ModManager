@@ -4,7 +4,7 @@ using ModManager.Presentation.Core;
 
 namespace ModManager.Presentation.ViewModel;
 
-public class CurrentStatusDisplayerViewModel
+public class CurrentStatusDisplayerViewModel : IViewModel
 {
     public IStateService StateService { get; }
 

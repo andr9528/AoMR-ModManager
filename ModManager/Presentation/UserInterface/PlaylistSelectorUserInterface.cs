@@ -1,3 +1,4 @@
+using System.Reflection.Metadata;
 using CommunityToolkit.WinUI.UI.Controls;
 using ModManager.Abstractions.Models;
 using ModManager.Extensions;
@@ -122,7 +123,7 @@ public class PlaylistSelectorUserInterface
 
     private Button CreateRenameButton()
     {
-        Button button = ButtonFactory.CreateFontIconButton(ButtonFactory.RENAME_SYMBOL_UNICODE);
+        Button button = ButtonFactory.CreateFontIconButton(Constants.Glyphs.RENAME_SYMBOL_UNICODE);
         button.Margin = new Thickness(2);
 
         button.SetBinding(FrameworkElement.TagProperty,
@@ -133,7 +134,7 @@ public class PlaylistSelectorUserInterface
 
     private Button CreateDeleteButton()
     {
-        Button button = ButtonFactory.CreateFontIconButton(ButtonFactory.DELETE_SYMBOL_UNICODE);
+        Button button = ButtonFactory.CreateFontIconButton(Constants.Glyphs.DELETE_SYMBOL_UNICODE);
         button.Margin = new Thickness(2);
 
         button.SetBinding(FrameworkElement.TagProperty,

@@ -1,8 +1,9 @@
+using ModManager.Abstractions.Models;
 using ModManager.Abstractions.Services;
 
 namespace ModManager.Presentation.ViewModel;
 
-public partial class PlaylistSelectorViewModel : ObservableObject
+public partial class PlaylistSelectorViewModel : ObservableObject, IViewModel
 {
     [ObservableProperty] private bool isMenuOpen;
 

@@ -31,32 +31,32 @@ public abstract class BaseDisplayerUserInterface<TLogic, TViewModel> where TLogi
     protected abstract void ConfigureContentGrid(Grid grid);
     protected abstract void AddChildrenToGrid(Grid grid);
 
-    protected DataGridTemplateColumn BuildIndicatorsColumn(string header)
+    protected Grid BuildIndicatorsTemplate()
     {
-        var template = new DataTemplate(BuildIndicatorsTemplate);
-
-        return new DataGridTemplateColumn()
-        {
-            Header = header.ScreamingSnakeCaseToTitleCase(),
-            CellTemplate = template,
-            Width = new DataGridLength(30, DataGridLengthUnitType.Star),
-        };
-    }
-
-    private StackPanel? BuildIndicatorsTemplate()
-    {
-        var panel = new StackPanel
-        {
-            Orientation = Orientation.Horizontal,
-        };
+        Grid grid = GridFactory.CreateLeftAlignedGrid().DefineColumns(sizes: [50, 50,]);
 
         Button enabledIndicatorButton = CreateEnabledIndicatorButton();
         Button localIndicatorButton = CreateLocalIndicatorButton();
 
-        panel.Children.Add(enabledIndicatorButton);
-        panel.Children.Add(localIndicatorButton);
+        grid.Children.Add(enabledIndicatorButton.SetColumn(0));
+        grid.Children.Add(localIndicatorButton.SetColumn(1));
 
-        return panel;
+        return grid;
+    }
+
+    protected Grid BuildModsTemplate()
+    {
+        Grid grid = GridFactory.CreateLeftAlignedGrid();
+
+        TextBlock modsTitle = TextBlockFactory.CreateDefaultTextBlock();
+
+        var titleBinding = new Binding() {Path = nameof(IMod.Title),};
+
+        modsTitle.SetBinding(TextBlock.TextProperty, titleBinding);
+
+        grid.Children.Add(modsTitle);
+
+        return grid;
     }
 
     private Button CreateLocalIndicatorButton()
@@ -125,30 +125,4 @@ public abstract class BaseDisplayerUserInterface<TLogic, TViewModel> where TLogi
 
         return button;
     }
-
-    protected DataGridTextColumn BuildModsColumn(string header)
-    {
-        return new DataGridTextColumn()
-        {
-            Header = header.ScreamingSnakeCaseToTitleCase(),
-            Binding = new Binding {Path = nameof(IMod.Title),},
-            Width = new DataGridLength(70, DataGridLengthUnitType.Star),
-            FontSize = 12,
-            Foreground = new SolidColorBrush(Colors.Black),
-        };
-    }
-
-    protected DataGridTemplateColumn BuildActionsColumn(string header)
-    {
-        var template = new DataTemplate(BuildActionsTemplate);
-
-        return new DataGridTemplateColumn()
-        {
-            Header = header.ScreamingSnakeCaseToTitleCase(),
-            CellTemplate = template,
-            Width = new DataGridLength(30, DataGridLengthUnitType.Star),
-        };
-    }
-
-    protected abstract StackPanel BuildActionsTemplate();
 }

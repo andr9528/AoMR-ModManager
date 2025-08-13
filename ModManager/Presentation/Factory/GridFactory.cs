@@ -6,7 +6,16 @@ public static class GridFactory
     {
         return new Grid()
         {
-            Margin = new Thickness(5),
+            Margin = new Thickness(2),
         };
+    }
+
+    public static Grid CreateLeftAlignedGrid()
+    {
+        Grid grid = CreateDefaultGrid();
+
+        grid.HorizontalAlignment = HorizontalAlignment.Left;
+
+        return grid;
     }
 }

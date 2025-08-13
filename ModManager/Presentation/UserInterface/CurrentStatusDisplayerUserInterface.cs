@@ -7,6 +7,7 @@ using ModManager.Presentation.Factory;
 using ModManager.Presentation.Logic;
 using ModManager.Presentation.ViewModel;
 using Uno.Toolkit.WinUI.Markup;
+using Border = Microsoft.UI.Xaml.Controls.Border;
 
 namespace ModManager.Presentation.UserInterface;
 
@@ -14,6 +15,8 @@ public class
     CurrentStatusDisplayerUserInterface : BaseDisplayerUserInterface<CurrentStatusDisplayerLogic,
     CurrentStatusDisplayerViewModel>
 {
+    private readonly int[] columnSizes = [30, 70, 30,];
+
     private enum DataGridColumns
     {
         ACTIONS = 0,
@@ -29,83 +32,106 @@ public class
     /// <inheritdoc />
     protected override void ConfigureContentGrid(Grid grid)
     {
-        grid.DefineColumns(sizes: [100,]).DefineRows(sizes: [100,]);
+        grid.DefineColumns(sizes: columnSizes);
+
+        grid.RowDefinitions.Add(new RowDefinition() {Height = new GridLength(10, GridUnitType.Auto),});
+        grid.RowDefinitions.Add(new RowDefinition() {Height = new GridLength(10, GridUnitType.Auto),});
+
+        grid.DefineRows(sizes: [80,]);
     }
 
     /// <inheritdoc />
     protected override void AddChildrenToGrid(Grid grid)
     {
-        DataGrid dataGrid = CreateDataGrid();
+        TextBlock headerOneLabel = CreateActionsLabel();
+        TextBlock headerTwoLabel = CreateModsLabel();
+        TextBlock headerThreeLabel = CreateIndicatorsLabel();
+        ListView lisView = CreateListView();
 
-        grid.Children.Add(dataGrid.SetRow(0).SetColumn(0));
+        grid.Children.Add(headerOneLabel.SetRow(1).SetColumn(0));
+        grid.Children.Add(headerTwoLabel.SetRow(1).SetColumn(1));
+        grid.Children.Add(headerThreeLabel.SetRow(1).SetColumn(2));
+        grid.Children.Add(lisView.SetRow(2).SetColumn(0, 3));
     }
 
-    private DataGrid CreateDataGrid()
+    private TextBlock CreateIndicatorsLabel()
     {
-        var columns = Enum.GetValues<DataGridColumns>().Select(BuildColumn).ToList();
-        DataGrid dataGrid = DataGridFactory.CreateDataGrid(ViewModel,
-            $"{nameof(ViewModel.StateService)}.{nameof(ViewModel.StateService.CurrentModStatus)}.{nameof(ViewModel.StateService.CurrentModStatus.Mods)}",
-            columns);
-
-        dataGrid.SelectionMode = DataGridSelectionMode.Single;
-        dataGrid.IsTabStop = false;
-        dataGrid.CellStyle = CreateCellStyle();
-        dataGrid.RowStyle = CreateRowStyle();
-
-        dataGrid.SelectionChanged += Logic.DataGridRowSelectionChanged;
-        dataGrid.LoadingRow += Logic.DataGridLoadedRow;
-
-        return dataGrid;
+        return TextBlockFactory.CreateLabel(DataGridColumns.INDICATORS.ToString().ScreamingSnakeCaseToTitleCase());
     }
 
-    private Style CreateRowStyle()
+    private TextBlock CreateModsLabel()
     {
-        var style = new Style(typeof(DataGridRow));
-
-        style.Setters.Add(new Setter(Control.BorderBrushProperty,
-            new SolidColorBrush(Constants.UiColors.RowBorderColor)));
-        style.Setters.Add(new Setter(Control.BorderThicknessProperty, new Thickness(1)));
-
-        return style;
+        return TextBlockFactory.CreateLabel(DataGridColumns.MODS.ToString().ScreamingSnakeCaseToTitleCase());
     }
 
-
-    private Style CreateCellStyle()
+    private TextBlock CreateActionsLabel()
     {
-        var style = new Style(typeof(DataGridCell));
-
-        style.Setters.Add(new Setter(FrameworkElement.BackgroundProperty, new SolidColorBrush(Colors.Transparent)));
-        style.Setters.Add(new Setter(Control.BorderBrushProperty,
-            new SolidColorBrush(Constants.UiColors.RowBorderColor)));
-        style.Setters.Add(new Setter(Control.BorderThicknessProperty, new Thickness(1)));
-        //style.Setters.Add(new Setter(FrameworkElement.FocusVisualPrimaryBrushProperty,
-        //    new SolidColorBrush(Colors.Transparent)));
-        //style.Setters.Add(new Setter(FrameworkElement.FocusVisualSecondaryBrushProperty,
-        //    new SolidColorBrush(Colors.Transparent)));
-        style.Setters.Add(new Setter(UIElement.UseSystemFocusVisualsProperty, false));
-        style.Setters.Add(new Setter(UIElement.IsTabStopProperty, false));
-
-        return style;
+        return TextBlockFactory.CreateLabel(DataGridColumns.ACTIONS.ToString().ScreamingSnakeCaseToTitleCase());
     }
 
-    private DataGridColumn BuildColumn(DataGridColumns column)
+    private ListView CreateListView()
+    {
+        var listView = new ListView()
+        {
+            ItemTemplate = new DataTemplate(() => BuildListViewTemplateContent(Enum.GetValues<DataGridColumns>()
+                .Select(BuildColumnTemplate).ToList())),
+        };
+
+        listView.ScrollViewer((builder) => builder.VerticalScrollBarVisibility(ScrollBarVisibility.Hidden));
+
+        var sourceBinding = new Binding()
+        {
+            Path =
+                $"{nameof(ViewModel.StateService)}.{nameof(ViewModel.StateService.CurrentModStatus)}.{nameof(ViewModel.StateService.CurrentModStatus.Mods)}",
+        };
+
+        listView.SetBinding(ItemsControl.ItemsSourceProperty, sourceBinding);
+
+        return listView;
+    }
+
+    private Border BuildListViewTemplateContent(List<Grid> columnTemplates)
+    {
+        var border = new Border()
+        {
+            BorderBrush = new SolidColorBrush(Constants.UiColors.RowBorderColor),
+            BorderThickness = new Thickness(1),
+        };
+
+        var backgroundBinding = new Binding()
+        {
+            Path = nameof(IMod.IsEnabled),
+            Converter = new BooleanToBrushConverter()
+            {
+                TrueBrush = new SolidColorBrush(Constants.UiColors.OnRowColor),
+                FalseBrush = new SolidColorBrush(Constants.UiColors.OffRowColor),
+            },
+        };
+
+        border.SetBinding(FrameworkElement.BackgroundProperty, backgroundBinding);
+
+        Grid rowGrid = GridFactory.CreateDefaultGrid().DefineColumns(sizes: columnSizes).DefineRows(sizes: [100,]);
+        columnTemplates.ForEach((index, panel) => rowGrid.Children.Add(panel.SetColumn(index)));
+
+        border.Child = rowGrid;
+
+        return border;
+    }
+
+    private Grid BuildColumnTemplate(DataGridColumns column)
     {
         return column switch
         {
-            DataGridColumns.ACTIONS => BuildActionsColumn(DataGridColumns.ACTIONS.ToString()),
-            DataGridColumns.MODS => BuildModsColumn(DataGridColumns.MODS.ToString()),
-            DataGridColumns.INDICATORS => BuildIndicatorsColumn(DataGridColumns.INDICATORS.ToString()),
+            DataGridColumns.ACTIONS => BuildActionsTemplate(),
+            DataGridColumns.MODS => BuildModsTemplate(),
+            DataGridColumns.INDICATORS => BuildIndicatorsTemplate(),
             var _ => throw new ArgumentOutOfRangeException(nameof(column), column, null),
         };
     }
 
-    /// <inheritdoc />
-    protected override StackPanel BuildActionsTemplate()
+    protected Grid BuildActionsTemplate()
     {
-        var panel = new StackPanel
-        {
-            Orientation = Orientation.Horizontal,
-        };
+        Grid panel = GridFactory.CreateLeftAlignedGrid();
 
         Button addModButton = CreateAddModButton();
 

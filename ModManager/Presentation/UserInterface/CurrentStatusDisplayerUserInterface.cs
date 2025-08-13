@@ -49,31 +49,43 @@ public class
 
         dataGrid.SelectionMode = DataGridSelectionMode.Single;
         dataGrid.IsTabStop = false;
-        dataGrid.SelectionChanged += Logic.DataGridRowSelectionChanged;
         dataGrid.CellStyle = CreateCellStyle();
+        dataGrid.RowStyle = CreateRowStyle();
 
+        dataGrid.SelectionChanged += Logic.DataGridRowSelectionChanged;
         dataGrid.LoadingRow += Logic.DataGridLoadedRow;
 
         return dataGrid;
     }
 
+    private Style CreateRowStyle()
+    {
+        var style = new Style(typeof(DataGridRow));
+
+        style.Setters.Add(new Setter(Control.BorderBrushProperty,
+            new SolidColorBrush(Constants.UiColors.RowBorderColor)));
+        style.Setters.Add(new Setter(Control.BorderThicknessProperty, new Thickness(1)));
+
+        return style;
+    }
+
 
     private Style CreateCellStyle()
     {
-        var cellStyle = new Style(typeof(DataGridCell));
+        var style = new Style(typeof(DataGridCell));
 
-        cellStyle.Setters.Add(new Setter(FrameworkElement.BackgroundProperty, new SolidColorBrush(Colors.Transparent)));
-        cellStyle.Setters.Add(new Setter(Control.BorderBrushProperty,
+        style.Setters.Add(new Setter(FrameworkElement.BackgroundProperty, new SolidColorBrush(Colors.Transparent)));
+        style.Setters.Add(new Setter(Control.BorderBrushProperty,
             new SolidColorBrush(Constants.UiColors.RowBorderColor)));
-        cellStyle.Setters.Add(new Setter(Control.BorderThicknessProperty, new Thickness(1)));
-        cellStyle.Setters.Add(new Setter(FrameworkElement.FocusVisualPrimaryBrushProperty,
-            new SolidColorBrush(Colors.Transparent)));
-        cellStyle.Setters.Add(new Setter(FrameworkElement.FocusVisualSecondaryBrushProperty,
-            new SolidColorBrush(Colors.Transparent)));
-        cellStyle.Setters.Add(new Setter(UIElement.UseSystemFocusVisualsProperty, false));
-        cellStyle.Setters.Add(new Setter(UIElement.IsTabStopProperty, false));
+        style.Setters.Add(new Setter(Control.BorderThicknessProperty, new Thickness(1)));
+        //style.Setters.Add(new Setter(FrameworkElement.FocusVisualPrimaryBrushProperty,
+        //    new SolidColorBrush(Colors.Transparent)));
+        //style.Setters.Add(new Setter(FrameworkElement.FocusVisualSecondaryBrushProperty,
+        //    new SolidColorBrush(Colors.Transparent)));
+        style.Setters.Add(new Setter(UIElement.UseSystemFocusVisualsProperty, false));
+        style.Setters.Add(new Setter(UIElement.IsTabStopProperty, false));
 
-        return cellStyle;
+        return style;
     }
 
     private DataGridColumn BuildColumn(DataGridColumns column)
@@ -121,10 +133,7 @@ public class
             },
         };
 
-        var tagBinding = new Binding
-        {
-            Path = nameof(IMod.WorkshopId),
-        };
+        var tagBinding = new Binding();
 
         button.SetBinding(UIElement.IsHitTestVisibleProperty, hitTestBinding);
         button.SetBinding(FrameworkElement.BackgroundProperty, backgroundBinding);

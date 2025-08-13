@@ -1,16 +1,22 @@
+using System.Collections;
 using CommunityToolkit.WinUI.UI.Controls;
+using Microsoft.UI.Dispatching;
 using ModManager.Abstractions.Models;
 using ModManager.Abstractions.Services;
 
 namespace ModManager.Presentation.Core;
 
-public abstract class BaseDisplayerLogic : IDisplayerLogic
+public abstract class BaseDisplayerLogic
 {
     protected readonly IStateService StateService;
+
+    private readonly Dictionary<IMod, EventHandler<bool>> enabledEventHandlers = new();
+    private readonly DispatcherQueue? uiQueue;
 
     protected BaseDisplayerLogic(IStateService stateService)
     {
         StateService = stateService;
+        uiQueue = DispatcherQueue.GetForCurrentThread();
     }
 
     public void DataGridRowSelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -22,6 +28,7 @@ public abstract class BaseDisplayerLogic : IDisplayerLogic
 
         dataGrid.SelectionChanged -= DataGridRowSelectionChanged;
         dataGrid.SelectedItem = null;
+        dataGrid.SelectedIndex = -1;
         dataGrid.SelectionChanged += DataGridRowSelectionChanged;
     }
 
@@ -32,45 +39,66 @@ public abstract class BaseDisplayerLogic : IDisplayerLogic
             return;
         }
 
-        SetupRowColorHandling(e.Row, mod);
+        SetupRowColorHandling(e.Row, mod, dataGrid);
     }
 
-    private void SetupRowColorHandling(DataGridRow row, IMod mod)
+    private void SetupRowColorHandling(DataGridRow row, IMod mod, DataGrid dataGrid)
     {
         UpdateRowColor(row, mod);
 
-        // Subscribe using a lambda that captures both row and mod
-        EventHandler<bool> handler = (s, args) => { UpdateRowColor(row, mod); };
+        if (enabledEventHandlers.TryGetValue(mod, out var existingHandler))
+        {
+            mod.IsEnabledChanged -= existingHandler;
+        }
+
+        EventHandler<bool> handler = (s, args) =>
+        {
+            uiQueue?.TryEnqueue(() => UpdateRowColorWithForcedRenderUpdate(row, mod, dataGrid));
+        };
+
         mod.IsEnabledChanged += handler;
 
-        // Unsubscribe when the row unloads to prevent memory leaks
-        row.Unloaded += (s, args) => { mod.IsEnabledChanged -= handler; };
+        enabledEventHandlers[mod] = handler;
+
+        row.Unloaded += (s, args) =>
+        {
+            if (!enabledEventHandlers.TryGetValue(mod, out var handlerToRemove))
+            {
+                return;
+            }
+
+            mod.IsEnabledChanged -= handlerToRemove;
+            enabledEventHandlers.Remove(mod);
+        };
     }
 
-    public void EnabledIndicatorButtonClicked(object sender, RoutedEventArgs e)
+    private void UpdateRowColorWithForcedRenderUpdate(DataGridRow row, IMod mod, DataGrid dataGrid)
     {
-        if (sender is not Button button)
-        {
-            return;
-        }
+        UpdateRowColor(row, mod);
 
-        if (button.Tag is not long workshopId)
-        {
-            return;
-        }
+        IEnumerable? temp = dataGrid.ItemsSource;
+        dataGrid.ItemsSource = null;
+        dataGrid.ItemsSource = temp;
 
-        IMod? mod = StateService.CurrentModStatus?.Mods.FirstOrDefault(x => x.WorkshopId == workshopId);
-
-        if (mod != null)
-        {
-            mod.IsEnabled = !mod.IsEnabled;
-        }
+        var dummy = 1;
     }
+
 
     private void UpdateRowColor(DataGridRow row, IMod mod)
     {
         row.Background = mod.IsEnabled
             ? new SolidColorBrush(Constants.UiColors.OnRowColor)
             : new SolidColorBrush(Constants.UiColors.OffRowColor);
+    }
+
+    protected bool IsClickedMod(IMod mod, IMod taggedMod)
+    {
+        if (mod.WorkshopId != 0 && taggedMod.WorkshopId != 0 && mod.WorkshopId == taggedMod.WorkshopId)
+        {
+            return true;
+        }
+
+        return mod.Title.Equals(taggedMod.Title, StringComparison.InvariantCultureIgnoreCase) &&
+               mod.IsLocalMod == taggedMod.IsLocalMod;
     }
 }

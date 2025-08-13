@@ -6,7 +6,7 @@ using ModManager.Presentation.Core;
 
 namespace ModManager.Presentation.Logic;
 
-public class CurrentStatusDisplayerLogic : BaseDisplayerLogic
+public class CurrentStatusDisplayerLogic : BaseDisplayerLogic, IDisplayerLogic
 {
     public CurrentStatusDisplayerLogic(IStateService stateService) : base(stateService)
     {
@@ -17,12 +17,12 @@ public class CurrentStatusDisplayerLogic : BaseDisplayerLogic
     {
         var button = sender as Button;
 
-        if (button?.Tag is not long workshopId)
+        if (button?.Tag is not IMod taggedMod)
         {
             return;
         }
 
-        IMod? mod = StateService.EditingPlayset?.ModStatus.Mods.FirstOrDefault(x => x.WorkshopId == workshopId);
+        IMod? mod = StateService.EditingPlayset?.ModStatus.Mods.FirstOrDefault(x => IsClickedMod(x, taggedMod));
 
         if (mod == null)
         {
@@ -30,5 +30,25 @@ public class CurrentStatusDisplayerLogic : BaseDisplayerLogic
         }
 
         mod.IsHidden = false;
+    }
+
+    public void EnabledIndicatorButtonClicked(object sender, RoutedEventArgs e)
+    {
+        if (sender is not Button button)
+        {
+            return;
+        }
+
+        if (button.Tag is not IMod taggedMod)
+        {
+            return;
+        }
+
+        IMod? mod = StateService.CurrentModStatus?.Mods.FirstOrDefault(x => IsClickedMod(x, taggedMod));
+
+        if (mod != null)
+        {
+            mod.IsEnabled = !mod.IsEnabled;
+        }
     }
 }

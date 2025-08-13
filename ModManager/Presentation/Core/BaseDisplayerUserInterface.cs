@@ -114,14 +114,12 @@ public abstract class BaseDisplayerUserInterface<TLogic, TViewModel> where TLogi
             },
         };
 
-        var tagBinding = new Binding
-        {
-            Path = nameof(IMod.WorkshopId),
-        };
+        var tagBinding = new Binding();
 
         button.SetBinding(ContentControl.ContentProperty, contentBinding);
         button.SetBinding(FrameworkElement.BackgroundProperty, backgroundBinding);
         button.SetBinding(FrameworkElement.TagProperty, tagBinding);
+
 
         button.Click += Logic.EnabledIndicatorButtonClicked;
 

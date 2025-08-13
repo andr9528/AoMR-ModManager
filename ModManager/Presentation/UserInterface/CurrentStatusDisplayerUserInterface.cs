@@ -111,7 +111,19 @@ public class
         border.SetBinding(FrameworkElement.BackgroundProperty, backgroundBinding);
 
         Grid rowGrid = GridFactory.CreateDefaultGrid().DefineColumns(sizes: columnSizes).DefineRows(sizes: [100,]);
-        columnTemplates.ForEach((index, panel) => rowGrid.Children.Add(panel.SetColumn(index)));
+        rowGrid.BorderThickness = new Thickness(1);
+
+        columnTemplates.ForEach((index, panel) =>
+        {
+            var cellBorder = new Border
+            {
+                BorderBrush = new SolidColorBrush(Constants.UiColors.RowBorderColor),
+                BorderThickness = new Thickness(index == 0 ? 0 : 1, 0, 0, 0),
+                Child = panel,
+            };
+
+            rowGrid.Children.Add(cellBorder.SetColumn(index));
+        });
 
         border.Child = rowGrid;
 

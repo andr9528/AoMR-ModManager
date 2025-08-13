@@ -18,6 +18,7 @@ public static class TextBlockFactory
             HorizontalAlignment = HorizontalAlignment.Center,
             VerticalAlignment = VerticalAlignment.Center,
             Foreground = new SolidColorBrush(Colors.Black),
+            Margin = new Thickness(2),
         };
     }
 }

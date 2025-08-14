@@ -15,8 +15,6 @@ public class
     CurrentStatusDisplayerUserInterface : BaseDisplayerUserInterface<CurrentStatusDisplayerLogic,
     CurrentStatusDisplayerViewModel>
 {
-    private readonly int[] columnSizes = [30, 70, 30,];
-
     private enum DataGridColumns
     {
         ACTIONS = 0,
@@ -32,52 +30,25 @@ public class
     /// <inheritdoc />
     protected override void ConfigureContentGrid(Grid grid)
     {
-        grid.DefineColumns(sizes: columnSizes);
-
-        grid.RowDefinitions.Add(new RowDefinition() {Height = new GridLength(10, GridUnitType.Auto),});
         grid.RowDefinitions.Add(new RowDefinition() {Height = new GridLength(10, GridUnitType.Auto),});
 
-        grid.DefineRows(sizes: [80,]);
+        grid.DefineRows(sizes: [90,]);
     }
 
     /// <inheritdoc />
     protected override void AddChildrenToGrid(Grid grid)
     {
-        TextBlock headerOneLabel = CreateActionsLabel();
-        TextBlock headerTwoLabel = CreateModsLabel();
-        TextBlock headerThreeLabel = CreateIndicatorsLabel();
-        ListView lisView = CreateListView();
+        Grid listViewGrid = CreateListViewGrid();
 
-        grid.Children.Add(headerOneLabel.SetRow(1).SetColumn(0));
-        grid.Children.Add(headerTwoLabel.SetRow(1).SetColumn(1));
-        grid.Children.Add(headerThreeLabel.SetRow(1).SetColumn(2));
-        grid.Children.Add(lisView.SetRow(2).SetColumn(0, 3));
+        grid.Children.Add(listViewGrid.SetRow(1));
     }
 
-    private TextBlock CreateIndicatorsLabel()
-    {
-        return TextBlockFactory.CreateLabel(DataGridColumns.INDICATORS.ToString().ScreamingSnakeCaseToTitleCase());
-    }
 
-    private TextBlock CreateModsLabel()
+    private Grid CreateListViewGrid()
     {
-        return TextBlockFactory.CreateLabel(DataGridColumns.MODS.ToString().ScreamingSnakeCaseToTitleCase());
-    }
-
-    private TextBlock CreateActionsLabel()
-    {
-        return TextBlockFactory.CreateLabel(DataGridColumns.ACTIONS.ToString().ScreamingSnakeCaseToTitleCase());
-    }
-
-    private ListView CreateListView()
-    {
-        var listView = new ListView()
-        {
-            ItemTemplate = new DataTemplate(() => BuildListViewTemplateContent(Enum.GetValues<DataGridColumns>()
-                .Select(BuildColumnTemplate).ToList())),
-        };
-
-        listView.ScrollViewer((builder) => builder.VerticalScrollBarVisibility(ScrollBarVisibility.Hidden));
+        var columns = Enum.GetValues<DataGridColumns>();
+        var columnHeaders = columns.Select(BuildColumnHeader).ToList();
+        IList<int> columnSizes = [30, 70, 30,];
 
         var sourceBinding = new Binding()
         {
@@ -85,49 +56,12 @@ public class
                 $"{nameof(ViewModel.StateService)}.{nameof(ViewModel.StateService.CurrentModStatus)}.{nameof(ViewModel.StateService.CurrentModStatus.Mods)}",
         };
 
-        listView.SetBinding(ItemsControl.ItemsSourceProperty, sourceBinding);
+        return ListViewFactory.CreateListView(columnSizes.ToArray(), columnHeaders, TemplateFactory, sourceBinding);
 
-        return listView;
-    }
-
-    private Border BuildListViewTemplateContent(List<Grid> columnTemplates)
-    {
-        var border = new Border()
+        Border TemplateFactory()
         {
-            BorderBrush = new SolidColorBrush(Constants.UiColors.RowBorderColor),
-            BorderThickness = new Thickness(1),
-        };
-
-        var backgroundBinding = new Binding()
-        {
-            Path = nameof(IMod.IsEnabled),
-            Converter = new BooleanToBrushConverter()
-            {
-                TrueBrush = new SolidColorBrush(Constants.UiColors.OnRowColor),
-                FalseBrush = new SolidColorBrush(Constants.UiColors.OffRowColor),
-            },
-        };
-
-        border.SetBinding(FrameworkElement.BackgroundProperty, backgroundBinding);
-
-        Grid rowGrid = GridFactory.CreateDefaultGrid().DefineColumns(sizes: columnSizes).DefineRows(sizes: [100,]);
-        rowGrid.BorderThickness = new Thickness(1);
-
-        columnTemplates.ForEach((index, panel) =>
-        {
-            var cellBorder = new Border
-            {
-                BorderBrush = new SolidColorBrush(Constants.UiColors.RowBorderColor),
-                BorderThickness = new Thickness(index == 0 ? 0 : 1, 0, 0, 0),
-                Child = panel,
-            };
-
-            rowGrid.Children.Add(cellBorder.SetColumn(index));
-        });
-
-        border.Child = rowGrid;
-
-        return border;
+            return ListViewFactory.BuildListViewTemplate(columnSizes, columns.Select(BuildColumnTemplate).ToList());
+        }
     }
 
     private Grid BuildColumnTemplate(DataGridColumns column)
@@ -141,7 +75,12 @@ public class
         };
     }
 
-    protected Grid BuildActionsTemplate()
+    private TextBlock BuildColumnHeader(DataGridColumns column)
+    {
+        return TextBlockFactory.CreateLabel(column.ToString().ScreamingSnakeCaseToTitleCase());
+    }
+
+    private Grid BuildActionsTemplate()
     {
         Grid panel = GridFactory.CreateLeftAlignedGrid();
 

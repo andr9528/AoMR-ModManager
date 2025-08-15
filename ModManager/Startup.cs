@@ -2,6 +2,11 @@ using System.Text.Json;
 using ModManager.Abstractions.Services;
 using ModManager.Abstractions.Startup;
 using ModManager.Services;
+using ModManager.Strings;
+using Uno.Extensions.Localization;
+using System.Reflection;
+using Uno.Extensions.Configuration;
+using Uno.Resizetizer;
 
 namespace ModManager;
 
@@ -39,19 +44,19 @@ internal class Startup
             .UseLogging(ConfigureLogging, true).UseSerilog(true, true)
             .UseConfiguration(configure: ConfigureConfigurationSource).UseLocalization(ConfigureLocalization)
             .UseSerialization(ConfigureSerialization));
+    }
 
-        //Host = app.Build();
+    private void ConfigureLocalization(HostBuilderContext builderContext, IServiceCollection serviceCollection)
+    {
+        // Doesn't appear to be run, when checking the Uno Platform source code.
+
+        // Allows for additional configuration regarding localization
+        // See appsettings.json for supported languages.
     }
 
     private void ConfigureSerialization(HostBuilderContext builderContext, IServiceCollection serviceCollection)
     {
         serviceCollection.AddSingleton(new JsonSerializerOptions {IncludeFields = true,});
-    }
-
-    private void ConfigureLocalization(HostBuilderContext builderContext, IServiceCollection serviceCollection)
-    {
-        // Allows for additional configuration regarding localization
-        // See appsettings.json for supported languages.
     }
 
     private IHostBuilder ConfigureConfigurationSource(IConfigBuilder configBuilder)
@@ -104,5 +109,6 @@ internal class Startup
         services.AddScoped<IFileService, FileService>();
 
         services.AddSingleton<IStateService, StateService>();
+        services.AddSingleton<ITranslationService, TranslationService>();
     }
 }

@@ -1,11 +1,13 @@
 using CommunityToolkit.WinUI.UI.Controls;
 using ModManager.Abstractions.Models;
+using ModManager.Abstractions.Services;
 using ModManager.Extensions;
 using ModManager.Presentation.Converter;
 using ModManager.Presentation.Core;
 using ModManager.Presentation.Factory;
 using ModManager.Presentation.Logic;
 using ModManager.Presentation.ViewModel;
+using ModManager.Strings;
 using Uno.Toolkit.WinUI.Markup;
 using Border = Microsoft.UI.Xaml.Controls.Border;
 
@@ -15,6 +17,8 @@ public class
     CurrentStatusDisplayerUserInterface : BaseDisplayerUserInterface<CurrentStatusDisplayerLogic,
     CurrentStatusDisplayerViewModel>
 {
+    private readonly ITranslationService translationService;
+
     private enum DataGridColumns
     {
         ACTIONS = 0,
@@ -23,8 +27,10 @@ public class
     }
 
     public CurrentStatusDisplayerUserInterface(
-        CurrentStatusDisplayerLogic logic, CurrentStatusDisplayerViewModel viewModel) : base(logic, viewModel)
+        CurrentStatusDisplayerLogic logic, ITranslationService translationService,
+        CurrentStatusDisplayerViewModel viewModel) : base(logic, viewModel)
     {
+        this.translationService = translationService;
     }
 
     /// <inheritdoc />
@@ -38,11 +44,22 @@ public class
     /// <inheritdoc />
     protected override void AddChildrenToGrid(Grid grid)
     {
+        TextBlock header = CreateHeader();
+
         Grid listViewGrid = CreateListViewGrid();
 
+        grid.Children.Add(header.SetRow(0));
         grid.Children.Add(listViewGrid.SetRow(1));
     }
 
+    private TextBlock CreateHeader()
+    {
+        TextBlock label = TextBlockFactory.CreateLabel(translationService[ResourceKeys.Status.HEADER]);
+        label.HorizontalAlignment = HorizontalAlignment.Center;
+        label.FontSize = Constants.Fonts.SECTION_HEADER_FONT_SIZE;
+
+        return label;
+    }
 
     private Grid CreateListViewGrid()
     {
@@ -77,7 +94,18 @@ public class
 
     private TextBlock BuildColumnHeader(DataGridColumns column)
     {
-        return TextBlockFactory.CreateLabel(column.ToString().ScreamingSnakeCaseToTitleCase());
+        return TextBlockFactory.CreateLabel(translationService[GetColumnTitleKey(column)]);
+    }
+
+    private string GetColumnTitleKey(DataGridColumns column)
+    {
+        return column switch
+        {
+            DataGridColumns.ACTIONS => ResourceKeys.Status.COLUMN_ONE_HEADER,
+            DataGridColumns.MODS => ResourceKeys.Status.COLUMN_TWO_HEADER,
+            DataGridColumns.INDICATORS => ResourceKeys.Status.COLUMN_THREE_HEADER,
+            var _ => throw new ArgumentOutOfRangeException(nameof(column), column, null),
+        };
     }
 
     private Grid BuildActionsTemplate()

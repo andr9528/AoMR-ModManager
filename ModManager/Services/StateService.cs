@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using System.Globalization;
 using Microsoft.UI.Dispatching;
 using ModManager.Abstractions.Models;
 using ModManager.Abstractions.Services;
@@ -12,6 +13,7 @@ public partial class StateService : ObservableObject, IStateService
 {
     private readonly IFileService fileService;
     private readonly ILogger<StateService> logger;
+    private readonly ILocalizationService localizationService;
     [ObservableProperty] private IModStatus? currentModStatus;
     [ObservableProperty] private IPlayset? editingPlayset;
     [ObservableProperty] private bool isPlaysetActive;
@@ -21,10 +23,12 @@ public partial class StateService : ObservableObject, IStateService
     public event EventHandler<IPlayset?> EditingPlaysetChanged;
     public event EventHandler<bool> InitializationCompleted;
 
-    public StateService(IFileService fileService, ILogger<StateService> logger)
+    public StateService(
+        IFileService fileService, ILogger<StateService> logger, ILocalizationService localizationService)
     {
         this.fileService = fileService;
         this.logger = logger;
+        this.localizationService = localizationService;
 
         DispatcherQueue? uiQueue = DispatcherQueue.GetForCurrentThread();
         uiQueue.TryEnqueue(async () => { await InitializeState(); });
@@ -69,6 +73,8 @@ public partial class StateService : ObservableObject, IStateService
                 mod.IsEnabledChanged += ModOnIsEnabledChanged;
             });
 
+            SetStartingLanguage();
+
             InitializationCompleted?.Invoke(this, true);
         }
         catch (Exception e)
@@ -76,6 +82,17 @@ public partial class StateService : ObservableObject, IStateService
             logger.LogError(e, "Failed to initialize state service.");
             throw;
         }
+    }
+
+    private void SetStartingLanguage()
+    {
+        CultureInfo info = localizationService.CurrentCulture;
+
+        logger.LogInformation($"This PC has the following default Localization: {info.Name}");
+
+        CultureInfo englishInfo = localizationService.SupportedCultures.First();
+
+        localizationService.SetCurrentCultureAsync(englishInfo);
     }
 
     private void OnEditingPlaysetChanged(object? sender, IPlayset? e)

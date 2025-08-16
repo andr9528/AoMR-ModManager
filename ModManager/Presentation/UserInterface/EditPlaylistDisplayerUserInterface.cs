@@ -52,8 +52,7 @@ public class EditPlaylistDisplayerUserInterface : BaseDisplayerUserInterface<Edi
 
         var sourceBinding = new Binding()
         {
-            Path =
-                $"{nameof(ViewModel.StateService)}.{nameof(ViewModel.StateService.CurrentModStatus)}.{nameof(ViewModel.StateService.CurrentModStatus.Mods)}",
+            Path = nameof(ViewModel.ShownMods),
         };
 
         return ListViewFactory.CreateListView(columnSizes.ToArray(), columnHeaders, TemplateFactory, sourceBinding);

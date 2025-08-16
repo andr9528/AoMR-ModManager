@@ -2,6 +2,7 @@ using System.Collections.ObjectModel;
 using System.Reflection;
 using ModManager.Abstractions.Models;
 using ModManager.Abstractions.Services;
+using ModManager.Extensions;
 using Newtonsoft.Json;
 using Path = System.IO.Path;
 
@@ -197,7 +198,7 @@ public class FileService : IFileService
             {
                 foreach (IPlayset playset in playsets)
                 {
-                    IMod? playsetMod = playset.ModStatus.Mods.FirstOrDefault(m => m.Title == mod.Title);
+                    IMod? playsetMod = playset.ModStatus.Mods.FirstOrDefault(x => x.IsMatchingMod(mod));
 
                     if (playsetMod == null)
                     {
@@ -290,7 +291,7 @@ public class FileService : IFileService
             {
                 mod.IsEnabled = true;
                 return mod;
-            }));
+            }).ToList());
 
             await SavePlayset(new Playset(DEFAULT_ON_PLAYSET_FILE_NAME, allOnStatus));
         }
@@ -317,7 +318,7 @@ public class FileService : IFileService
             {
                 mod.IsEnabled = false;
                 return mod;
-            }));
+            }).ToList());
 
             await SavePlayset(new Playset(DEFAULT_OFF_PLAYSET_FILE_NAME, allOffStatus));
         }

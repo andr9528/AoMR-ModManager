@@ -16,6 +16,7 @@ public static class ListViewFactory
         var listView = new ListView()
         {
             ItemTemplate = new DataTemplate(templateFactory),
+            Margin = new Thickness(5),
         };
 
         listView.ScrollViewer((builder) => builder.VerticalScrollBarVisibility(ScrollBarVisibility.Hidden));

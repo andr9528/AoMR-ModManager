@@ -24,6 +24,7 @@ public static class Constants
         public static Color OffButtonColor = Colors.IndianRed.WithAlpha(0.4);
         public static Color DisabledButtonColor = Colors.Gray.WithAlpha(0.4);
         public static Color InteractableButtonColor = Colors.Teal;
+        public static Color InformationButtonColor = Colors.CadetBlue.WithAlpha(0.4);
         public static Color RowBorderColor = Colors.Black;
     }
 

@@ -33,15 +33,33 @@ public abstract class BaseDisplayerUserInterface<TLogic, TViewModel> where TLogi
 
     protected Grid BuildIndicatorsTemplate()
     {
-        Grid grid = GridFactory.CreateLeftAlignedGrid().DefineColumns(sizes: [50, 50,]);
+        Grid grid = GridFactory.CreateLeftAlignedGrid().DefineColumns(sizes: [50, 50, 50,]);
 
         Button enabledIndicatorButton = CreateEnabledIndicatorButton();
         Button localIndicatorButton = CreateLocalIndicatorButton();
+        Button priorityIndicatorButton = CreatePriorityIndicatorButton();
 
         grid.Children.Add(enabledIndicatorButton.SetColumn(0));
         grid.Children.Add(localIndicatorButton.SetColumn(1));
+        grid.Children.Add(priorityIndicatorButton.SetColumn(2));
 
         return grid;
+    }
+
+    private Button CreatePriorityIndicatorButton()
+    {
+        Button button = ButtonFactory.CreateDefaultButton();
+        button.IsHitTestVisible = false;
+        button.Background = new SolidColorBrush(Constants.UiColors.InformationButtonColor);
+
+        var contentBinding = new Binding()
+        {
+            Path = nameof(IMod.Priority),
+        };
+
+        button.SetBinding(ContentControl.ContentProperty, contentBinding);
+
+        return button;
     }
 
     protected Grid BuildModsTemplate()

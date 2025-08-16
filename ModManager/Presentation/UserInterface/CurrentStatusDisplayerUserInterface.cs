@@ -65,7 +65,7 @@ public class
     {
         var columns = Enum.GetValues<DataGridColumns>();
         var columnHeaders = columns.Select(BuildColumnHeader).ToList();
-        IList<int> columnSizes = [30, 70, 30,];
+        IList<int> columnSizes = [30, 70, 50,];
 
         var sourceBinding = new Binding()
         {

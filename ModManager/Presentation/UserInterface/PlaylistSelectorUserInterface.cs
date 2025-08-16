@@ -158,7 +158,7 @@ public class PlaylistSelectorUserInterface
     public Grid CreateContentGrid()
     {
         Grid grid = GridFactory.CreateDefaultGrid();
-        grid.DefineColumns(sizes: [60, 40,]).DefineRows(sizes: [80, 20,]);
+        grid.DefineColumns(sizes: [50, 50,]).DefineRows(sizes: [80, 20,]);
 
         var currentStatus = ActivatorUtilities.CreateInstance<CurrentStatusDisplayer>(App.Startup.ServiceProvider);
 

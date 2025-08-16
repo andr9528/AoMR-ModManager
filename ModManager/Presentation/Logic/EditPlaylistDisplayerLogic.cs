@@ -49,9 +49,12 @@ public class EditPlaylistDisplayerLogic : BaseDisplayerLogic, IDisplayerLogic
         }
 
         IMod? mod = StateService.EditingPlayset?.ModStatus.Mods.FirstOrDefault(x => x.IsMatchingMod(taggedMod));
-        if (mod != null)
+        if (mod == null)
         {
-            mod.IsHidden = true;
+            return;
         }
+
+        mod.IsEnabled = false;
+        mod.IsHidden = true;
     }
 }

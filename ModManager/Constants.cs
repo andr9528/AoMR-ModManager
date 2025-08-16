@@ -8,6 +8,7 @@ public static class Constants
     {
         public const string EDIT_SYMBOL_UNICODE = "\uE104";
         public const string DELETE_SYMBOL_UNICODE = "\uE107";
+        public const string TRASH_CAN_SYMBOL_UNICODE = "\uE74D";
         public const string RENAME_SYMBOL_UNICODE = "\uE8AC";
         public const string LEFT_ARROW_SYMBOL_UNICODE = "\u2190";
         public const string CHECKMARK_SYMBOL_UNICODE = "\uE8FB";
@@ -23,7 +24,7 @@ public static class Constants
         public static Color OffRowColor = Colors.IndianRed.WithAlpha(0.2);
         public static Color OffButtonColor = Colors.IndianRed.WithAlpha(0.4);
         public static Color DisabledButtonColor = Colors.Gray.WithAlpha(0.4);
-        public static Color InteractableButtonColor = Colors.Teal;
+        public static Color InteractableButtonColor = Colors.Teal.WithAlpha(0.4);
         public static Color InformationButtonColor = Colors.CadetBlue.WithAlpha(0.4);
         public static Color RowBorderColor = Colors.Black;
     }

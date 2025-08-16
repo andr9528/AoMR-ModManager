@@ -117,16 +117,28 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Edit_Header" xml:space="preserve">
+    <value>Currently Editing: </value>
+  </data>
   <data name="Status_Header" xml:space="preserve">
     <value>Current Status</value>
   </data>
   <data name="Status_Column_One_Header" xml:space="preserve">
     <value>Actions</value>
   </data>
+  <data name="Edit_Column_One_Header" xml:space="preserve">
+    <value>Mods</value>
+  </data>
   <data name="Status_Column_Three_Header" xml:space="preserve">
     <value>Indicators</value>
   </data>
+  <data name="Edit_Column_Three_Header" xml:space="preserve">
+    <value>Actions</value>
+  </data>
   <data name="Status_Column_Two_Header" xml:space="preserve">
     <value>Mods</value>
+  </data>
+  <data name="Edit_Column_Two_Header" xml:space="preserve">
+    <value>Indicators</value>
   </data>
 </root>

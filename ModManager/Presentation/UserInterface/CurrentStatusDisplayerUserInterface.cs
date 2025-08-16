@@ -110,13 +110,13 @@ public class
 
     private Grid BuildActionsTemplate()
     {
-        Grid panel = GridFactory.CreateLeftAlignedGrid();
+        Grid grid = GridFactory.CreateLeftAlignedGrid();
 
         Button addModButton = CreateAddModButton();
 
-        panel.Children.Add(addModButton);
+        grid.Children.Add(addModButton);
 
-        return panel;
+        return grid;
     }
 
     private Button CreateAddModButton()

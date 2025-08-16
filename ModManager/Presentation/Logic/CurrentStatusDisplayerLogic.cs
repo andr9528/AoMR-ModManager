@@ -22,7 +22,7 @@ public class CurrentStatusDisplayerLogic : BaseDisplayerLogic, IDisplayerLogic
             return;
         }
 
-        IMod? mod = StateService.EditingPlayset?.ModStatus.Mods.FirstOrDefault(x => IsClickedMod(x, taggedMod));
+        IMod? mod = StateService.EditingPlayset?.ModStatus.Mods.FirstOrDefault(x => x.IsMatchingMod(taggedMod));
 
         if (mod == null)
         {
@@ -44,7 +44,7 @@ public class CurrentStatusDisplayerLogic : BaseDisplayerLogic, IDisplayerLogic
             return;
         }
 
-        IMod? mod = StateService.CurrentModStatus?.Mods.FirstOrDefault(x => IsClickedMod(x, taggedMod));
+        IMod? mod = StateService.CurrentModStatus?.Mods.FirstOrDefault(x => x.IsMatchingMod(taggedMod));
 
         if (mod != null)
         {

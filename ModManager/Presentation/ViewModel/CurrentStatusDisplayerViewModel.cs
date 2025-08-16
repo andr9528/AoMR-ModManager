@@ -1,5 +1,6 @@
 using ModManager.Abstractions.Models;
 using ModManager.Abstractions.Services;
+using ModManager.Extensions;
 using ModManager.Presentation.Core;
 
 namespace ModManager.Presentation.ViewModel;
@@ -37,18 +38,18 @@ public class CurrentStatusDisplayerViewModel : IViewModel
 
     private void Mod_HiddenChanged(object? sender, bool e)
     {
-        if (sender is not IMod mod)
+        if (sender is not IMod eventMod)
         {
             return;
         }
 
-        IMod? currentMod = StateService.CurrentModStatus?.Mods.FirstOrDefault(x => x.WorkshopId == mod.WorkshopId);
+        IMod? currentMod = StateService.CurrentModStatus?.Mods.FirstOrDefault(x => x.IsMatchingMod(eventMod));
 
         if (currentMod == null)
         {
             return;
         }
 
-        currentMod.IsHiddenSibling = mod.IsHidden;
+        currentMod.IsHiddenSibling = eventMod.IsHidden;
     }
 }

@@ -61,6 +61,42 @@ namespace ModManager.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Edit_Column_One_Header.
+        /// </summary>
+        public static string Edit_Column_One_Header {
+            get {
+                return ResourceManager.GetString("Edit_Column_One_Header", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Edit_Column_Three_Header.
+        /// </summary>
+        public static string Edit_Column_Three_Header {
+            get {
+                return ResourceManager.GetString("Edit_Column_Three_Header", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Edit_Column_Two_Header.
+        /// </summary>
+        public static string Edit_Column_Two_Header {
+            get {
+                return ResourceManager.GetString("Edit_Column_Two_Header", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Edit_Header.
+        /// </summary>
+        public static string Edit_Header {
+            get {
+                return ResourceManager.GetString("Edit_Header", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Status_Column_One_Header.
         /// </summary>
         public static string Status_Column_One_Header {

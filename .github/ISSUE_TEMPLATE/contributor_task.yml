@@ -4,6 +4,7 @@ labels: []
 assignees: []
 milestone: true
 projects: true
+
 body:
   - type: markdown
     attributes:
@@ -11,12 +12,14 @@ body:
         ### 👋 Contributor Task Template
         Please fill in the details below. This issue template is intended for contributors only.
 
-  - type: input
+  - type: textarea
     id: summary
     attributes:
       label: Description
       description: Briefly describe the purpose or scope of this task.
-      placeholder: "This task is about..."
+      placeholder: This task is about...
+    validations:
+      required: true
 
   - type: textarea
     id: acceptance_criteria

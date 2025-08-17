@@ -11,6 +11,7 @@ public interface IMod
     public event EventHandler<bool> IsHiddenChanged;
     public event EventHandler<bool> IsHiddenSiblingChanged;
     public event EventHandler<bool> IsEnabledChanged;
+    public event EventHandler<int> PriorityChanged;
 
     public string Title { get; set; }
     public string Author { get; set; }

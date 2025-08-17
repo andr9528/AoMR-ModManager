@@ -18,6 +18,7 @@ public partial class Mod : ObservableObject, IMod
     public event EventHandler<bool> IsHiddenChanged;
     public event EventHandler<bool> IsHiddenSiblingChanged;
     public event EventHandler<bool> IsEnabledChanged;
+    public event EventHandler<int> PriorityChanged;
 
     /// <inheritdoc />
     public string Title { get; set; }
@@ -62,5 +63,10 @@ public partial class Mod : ObservableObject, IMod
     partial void OnIsEnabledChanged(bool oldValue, bool newValue)
     {
         IsEnabledChanged?.Invoke(this, newValue);
+    }
+
+    partial void OnPriorityChanged(int oldValue, int newValue)
+    {
+        PriorityChanged?.Invoke(this, newValue);
     }
 }

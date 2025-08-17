@@ -48,9 +48,7 @@ public partial class StateService : ObservableObject, IStateService
     {
         try
         {
-            IModStatus status = await fileService.GetCurrentModStatus();
-            status.Mods = new ObservableCollection<IMod>(status.Mods.OrderBy(x => x.Priority).ToList());
-            CurrentModStatus = status;
+            CurrentModStatus = await InitializeCurrentModStatus();
 
             await fileService.CreateDefaultPlaysetsIfNotExists(CurrentModStatus);
 
@@ -58,21 +56,11 @@ public partial class StateService : ObservableObject, IStateService
 
             await fileService.UpdatePlaysetsProperties(CurrentModStatus, Playsets);
 
-            IPlayset playset = Playsets.First();
-            playset.ModStatus.Mods =
-                new ObservableCollection<IMod>(playset.ModStatus.Mods.OrderBy(x => x.Priority).ToList());
-            EditingPlayset = playset;
+            EditingPlayset = InitializeEditingPlayset();
 
-            CurrentModStatusChanged += OnCurrentModStatusChanged;
-            EditingPlaysetChanged += OnEditingPlaysetChanged;
+            AttachEventHandlers();
+
             ReevaluateIsPlaysetActiveState();
-
-            CurrentModStatus?.Mods.ForEach(mod =>
-            {
-                mod.IsEnabledChanged -= ModOnIsEnabledChanged;
-                mod.IsEnabledChanged += ModOnIsEnabledChanged;
-            });
-
             SetStartingLanguage();
 
             InitializationCompleted?.Invoke(this, true);
@@ -82,6 +70,69 @@ public partial class StateService : ObservableObject, IStateService
             logger.LogError(e, "Failed to initialize state service.");
             throw;
         }
+    }
+
+    private void AttachEventHandlers()
+    {
+        CurrentModStatusChanged += OnCurrentModStatusChanged;
+        EditingPlaysetChanged += OnEditingPlaysetChanged;
+
+        AttachEventHandlersToCurrentMods();
+        AttachEventHandlersToEditMods();
+    }
+
+    private void AttachEventHandlersToEditMods()
+    {
+        EditingPlayset?.ModStatus.Mods.ForEach(mod =>
+        {
+            mod.IsEnabledChanged -= EditModOnIsEnabledChanged;
+            mod.IsEnabledChanged += EditModOnIsEnabledChanged;
+
+            mod.IsHiddenChanged -= EditModOnIsHiddenChanged;
+            mod.IsHiddenChanged += EditModOnIsHiddenChanged;
+
+            mod.PriorityChanged -= EditModOnPriorityChanged;
+            mod.PriorityChanged += EditModOnPriorityChanged;
+        });
+    }
+
+    private void EditModOnPriorityChanged(object? sender, int e)
+    {
+        ReevaluateIsPlaysetActiveState();
+        SaveEditPlaysetChanges();
+    }
+
+    private void EditModOnIsEnabledChanged(object? sender, bool e)
+    {
+        ReevaluateIsPlaysetActiveState();
+        SaveEditPlaysetChanges();
+    }
+
+    private void EditModOnIsHiddenChanged(object? sender, bool e)
+    {
+        ReevaluateIsPlaysetActiveState();
+        SaveEditPlaysetChanges();
+    }
+
+    private IPlayset InitializeEditingPlayset()
+    {
+        IPlayset playset = Playsets.First();
+        playset.ModStatus.Mods =
+            new ObservableCollection<IMod>(playset.ModStatus.Mods.OrderBy(x => x.Priority).ToList());
+        return playset;
+    }
+
+    private async Task<IModStatus> InitializeCurrentModStatus()
+    {
+        IModStatus status = await fileService.GetCurrentModStatus();
+        status.Mods = new ObservableCollection<IMod>(status.Mods.OrderBy(x => x.Priority).ToList());
+        return status;
+    }
+
+
+    private void SaveEditPlaysetChanges()
+    {
+        fileService.SavePlayset(EditingPlayset ?? throw new InvalidOperationException($"Expected a non-null Playset"));
     }
 
     private void SetStartingLanguage()
@@ -97,12 +148,12 @@ public partial class StateService : ObservableObject, IStateService
 
     private void OnEditingPlaysetChanged(object? sender, IPlayset? e)
     {
-        ReevaluateIsPlaysetActiveState();
-
         if (EditingPlayset == null)
         {
             return;
         }
+
+        ReevaluateIsPlaysetActiveState();
 
         EditingPlaysetChanged -= OnEditingPlaysetChanged;
 
@@ -112,22 +163,24 @@ public partial class StateService : ObservableObject, IStateService
         EditingPlayset = playset;
 
         EditingPlaysetChanged += OnEditingPlaysetChanged;
+
+        AttachEventHandlersToEditMods();
     }
 
     private void ReevaluateIsPlaysetActiveState()
     {
-        if (currentModStatus == null)
+        if (CurrentModStatus == null)
         {
             return;
         }
 
-        var currentMods = currentModStatus.Mods.Where(x => x.IsEnabled).ToList();
-        if (editingPlayset == null)
+        var currentMods = CurrentModStatus.Mods.Where(x => x.IsEnabled).ToList();
+        if (EditingPlayset == null)
         {
             return;
         }
 
-        var playsetMods = editingPlayset.ModStatus.Mods.Where(x => x.IsEnabled).ToList();
+        var playsetMods = EditingPlayset.ModStatus.Mods.Where(x => x.IsEnabled).ToList();
 
         IsPlaysetActive = currentMods.Count == playsetMods.Count &&
                           currentMods.All(currentMod => DoesPlaysetModsHaveMod(currentMod, playsetMods));
@@ -136,7 +189,8 @@ public partial class StateService : ObservableObject, IStateService
     private bool DoesPlaysetModsHaveMod(IMod currentMod, IList<IMod> playsetMods)
     {
         return playsetMods.Any(playsetMod =>
-            playsetMod.Title == currentMod.Title && playsetMod.Priority == currentMod.Priority);
+            playsetMod.Title == currentMod.Title && playsetMod.Priority == currentMod.Priority &&
+            currentMod.IsLocalMod == playsetMod.IsLocalMod);
     }
 
     private void OnCurrentModStatusChanged(object? sender, IModStatus? e)
@@ -156,14 +210,19 @@ public partial class StateService : ObservableObject, IStateService
 
         CurrentModStatusChanged += OnCurrentModStatusChanged;
 
+        AttachEventHandlersToCurrentMods();
+    }
+
+    private void AttachEventHandlersToCurrentMods()
+    {
         CurrentModStatus?.Mods.ForEach(mod =>
         {
-            mod.IsEnabledChanged -= ModOnIsEnabledChanged;
-            mod.IsEnabledChanged += ModOnIsEnabledChanged;
+            mod.IsEnabledChanged -= CurrentModOnIsEnabledChanged;
+            mod.IsEnabledChanged += CurrentModOnIsEnabledChanged;
         });
     }
 
-    private void ModOnIsEnabledChanged(object? sender, bool e)
+    private void CurrentModOnIsEnabledChanged(object? sender, bool e)
     {
         ReevaluateIsPlaysetActiveState();
 

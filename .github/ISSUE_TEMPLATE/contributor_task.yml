@@ -1,0 +1,31 @@
+name: Contributor Task
+description: Only for contributors to use when creating internal tasks or stories
+labels: []
+assignees: []
+milestone: true
+projects: true
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ### 👋 Contributor Task Template
+        Please fill in the details below. This issue template is intended for contributors only.
+
+  - type: input
+    id: summary
+    attributes:
+      label: Description
+      description: Briefly describe the purpose or scope of this task.
+      placeholder: "This task is about..."
+
+  - type: textarea
+    id: acceptance_criteria
+    attributes:
+      label: Acceptance Criteria
+      description: List the acceptance criteria using checkboxes. Use this to define when this task can be considered 'Done'.
+      value: |
+        - [ ] Criteria 1
+        - [ ] Criteria 2
+        - [ ] Criteria 3
+    validations:
+      required: true

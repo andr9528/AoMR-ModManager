@@ -2,7 +2,6 @@ name: Contributor Task
 description: Only for contributors to use when creating internal tasks or stories
 labels: []
 assignees: []
-milestones: []
 projects: []
 
 body:

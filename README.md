@@ -24,12 +24,12 @@ Follow the steps below to create it yourself, and in the end create a pull reque
 
 1. Fork this repository.
 2. Clone it locally so you can begin to make adjustments.
-3. Clone e.g 'en' folder under 'ModManager/Strings/', placing the new folder in the same folder.
-4. Rename the new folder to the Shorthand Iso Name of the target language, e.g 'da' for danish.
+3. Clone e.g 'Resources.en.resx' file under 'ModManager/Strings/', placing the new file in the same folder.
+4. Rename the language part of new file, e.g 'en', to the Shorthand Iso Name of the target language, e.g 'da' for danish.
    1. Set 1 codes found on [Wikipedia](https://en.wikipedia.org/wiki/List_of_ISO_639_language_codes) should be the correct ones.
-5. Update the translations inside the 'Resources.resw' file of the cloned folder.
-   1. I can highly suggest using Visual Studio while doing this, but any text editor should suffice.
-6. Add the new translation folder name to the array of Cultures in the [appsettings](ModManager/appsettings.json) file.
+5. Update the translations inside the cloned file.
+   1. I can highly recommend using Visual Studio while doing this, but any text editor should suffice.
+6. Add the new translation name to the array of Cultures in the [appsettings](ModManager/appsettings.json) file.
 7. Commit your changes back to Github.
    1. I try to follow [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0) for the commit message. Would be happy if you did too.
 8. Create a pull request from your forked repository back to my repository.

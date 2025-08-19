@@ -68,6 +68,7 @@
 
   <ItemGroup>
     <PackageReference Include="FastCloner" />
+    <PackageReference Include="Newtonsoft.Json" />
     <PackageReference Include="Serilog.Sinks.File" />
     <PackageReference Include="Uno.CommunityToolkit.WinUI.UI.Controls.DataGrid" />
   </ItemGroup>

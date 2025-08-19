@@ -20,6 +20,6 @@ public class PlaysetActionsRegionLogic : BaseLogic
         }
 
         fileService.ActivatePlayset(StateService.EditingPlayset);
-        StateService.CurrentModStatus = StateService.EditingPlayset.ModStatus;
+        StateService.CurrentModStatus = FastCloner.FastCloner.DeepClone(StateService.EditingPlayset.ModStatus);
     }
 }

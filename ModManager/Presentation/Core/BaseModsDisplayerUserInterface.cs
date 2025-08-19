@@ -6,13 +6,13 @@ using ModManager.Presentation.Factory;
 
 namespace ModManager.Presentation.Core;
 
-public abstract class BaseDisplayerUserInterface<TLogic, TViewModel> where TLogic : class, IDisplayerLogic
+public abstract class BaseModsDisplayerUserInterface<TLogic, TViewModel> where TLogic : class, IDisplayerLogic
     where TViewModel : class, IViewModel
 {
     protected readonly TLogic Logic;
     protected readonly TViewModel ViewModel;
 
-    protected BaseDisplayerUserInterface(TLogic logic, TViewModel viewModel)
+    protected BaseModsDisplayerUserInterface(TLogic logic, TViewModel viewModel)
     {
         Logic = logic;
         ViewModel = viewModel;

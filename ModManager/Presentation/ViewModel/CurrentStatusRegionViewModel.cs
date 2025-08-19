@@ -5,11 +5,11 @@ using ModManager.Presentation.Core;
 
 namespace ModManager.Presentation.ViewModel;
 
-public class CurrentStatusDisplayerViewModel : IViewModel
+public class CurrentStatusRegionViewModel : IViewModel
 {
     public IStateService StateService { get; }
 
-    public CurrentStatusDisplayerViewModel(IStateService stateService)
+    public CurrentStatusRegionViewModel(IStateService stateService)
     {
         StateService = stateService;
 

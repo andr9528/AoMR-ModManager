@@ -3,16 +3,16 @@ using ModManager.Abstractions.Models;
 using ModManager.Abstractions.Services;
 using ModManager.Strings;
 
-namespace ModManager.Presentation;
+namespace ModManager.Presentation.ViewModel;
 
-public partial class EditPlaylistDisplayerViewModel : ObservableObject, IViewModel
+public partial class EditPlaylistRegionViewModel : ObservableObject, IViewModel
 {
     private readonly ITranslationService translationService;
 
     [ObservableProperty] private string headerText;
     [ObservableProperty] private ObservableCollection<IMod> shownMods;
 
-    public EditPlaylistDisplayerViewModel(IStateService stateService, ITranslationService translationService)
+    public EditPlaylistRegionViewModel(IStateService stateService, ITranslationService translationService)
     {
         this.translationService = translationService;
         StateService = stateService;

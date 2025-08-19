@@ -14,8 +14,8 @@ using Border = Microsoft.UI.Xaml.Controls.Border;
 namespace ModManager.Presentation.UserInterface;
 
 public class
-    CurrentStatusDisplayerUserInterface : BaseDisplayerUserInterface<CurrentStatusDisplayerLogic,
-    CurrentStatusDisplayerViewModel>
+    CurrentStatusRegionUserInterface : BaseModsDisplayerUserInterface<CurrentStatusRegionLogic,
+    CurrentStatusRegionViewModel>
 {
     private readonly ITranslationService translationService;
 
@@ -26,9 +26,9 @@ public class
         INDICATORS = 2,
     }
 
-    public CurrentStatusDisplayerUserInterface(
-        CurrentStatusDisplayerLogic logic, ITranslationService translationService,
-        CurrentStatusDisplayerViewModel viewModel) : base(logic, viewModel)
+    public CurrentStatusRegionUserInterface(
+        CurrentStatusRegionLogic logic, ITranslationService translationService,
+        CurrentStatusRegionViewModel viewModel) : base(logic, viewModel)
     {
         this.translationService = translationService;
     }

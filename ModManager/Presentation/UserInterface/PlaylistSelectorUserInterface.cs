@@ -160,8 +160,8 @@ public class PlaylistSelectorUserInterface
         Grid grid = GridFactory.CreateDefaultGrid();
         grid.DefineColumns(sizes: [50, 50,]).DefineRows(sizes: [80, 20,]);
 
-        var currentStatus = ActivatorUtilities.CreateInstance<CurrentStatusDisplayer>(App.Startup.ServiceProvider);
-        var editPlaylist = ActivatorUtilities.CreateInstance<EditPlaylistDisplayer>(App.Startup.ServiceProvider);
+        var currentStatus = ActivatorUtilities.CreateInstance<CurrentStatusRegion>(App.Startup.ServiceProvider);
+        var editPlaylist = ActivatorUtilities.CreateInstance<EditPlaylistRegion>(App.Startup.ServiceProvider);
 
         grid.Children.Add(editPlaylist.SetRow(0).SetColumn(0));
         grid.Children.Add(currentStatus.SetRow(0).SetColumn(1));

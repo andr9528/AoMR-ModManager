@@ -2,12 +2,14 @@ using ModManager.Abstractions.Services;
 using ModManager.Extensions;
 using ModManager.Presentation.Core;
 using ModManager.Presentation.Factory;
+using ModManager.Presentation.Logic;
+using ModManager.Presentation.ViewModel;
 using ModManager.Strings;
 
-namespace ModManager.Presentation;
+namespace ModManager.Presentation.UserInterface;
 
-public class EditPlaylistDisplayerUserInterface : BaseDisplayerUserInterface<EditPlaylistDisplayerLogic,
-    EditPlaylistDisplayerViewModel>
+public class EditPlaylistRegionUserInterface : BaseModsDisplayerUserInterface<EditPlaylistRegionLogic,
+    EditPlaylistRegionViewModel>
 {
     private enum DataGridColumns
     {
@@ -18,9 +20,9 @@ public class EditPlaylistDisplayerUserInterface : BaseDisplayerUserInterface<Edi
 
     private readonly ITranslationService translationService;
 
-    public EditPlaylistDisplayerUserInterface(
-        EditPlaylistDisplayerLogic logic, ITranslationService translationService,
-        EditPlaylistDisplayerViewModel viewModel) : base(logic, viewModel)
+    public EditPlaylistRegionUserInterface(
+        EditPlaylistRegionLogic logic, ITranslationService translationService,
+        EditPlaylistRegionViewModel viewModel) : base(logic, viewModel)
     {
         this.translationService = translationService;
     }
@@ -52,7 +54,7 @@ public class EditPlaylistDisplayerUserInterface : BaseDisplayerUserInterface<Edi
 
         var sourceBinding = new Binding()
         {
-            Path = nameof(ViewModel.ShownMods),
+            Path = nameof(EditPlaylistRegionViewModel.ShownMods),
         };
 
         return ListViewFactory.CreateListView(columnSizes.ToArray(), columnHeaders, TemplateFactory, sourceBinding);
@@ -121,7 +123,7 @@ public class EditPlaylistDisplayerUserInterface : BaseDisplayerUserInterface<Edi
 
         var textBinding = new Binding()
         {
-            Path = nameof(EditPlaylistDisplayerViewModel.HeaderText),
+            Path = nameof(EditPlaylistRegionViewModel.HeaderText),
         };
 
         label.HorizontalAlignment = HorizontalAlignment.Center;

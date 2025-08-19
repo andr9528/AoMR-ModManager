@@ -3,13 +3,13 @@ using ModManager.Abstractions.Services;
 using ModManager.Extensions;
 using ModManager.Presentation.Core;
 
-namespace ModManager.Presentation;
+namespace ModManager.Presentation.Logic;
 
-public class EditPlaylistDisplayerLogic : BaseDisplayerLogic, IDisplayerLogic
+public class EditPlaylistRegionLogic : BaseDisplayerLogic, IDisplayerLogic
 {
-    private readonly EditPlaylistDisplayerViewModel viewModel;
+    private readonly ViewModel.EditPlaylistRegionViewModel viewModel;
 
-    public EditPlaylistDisplayerLogic(IStateService stateService, EditPlaylistDisplayerViewModel viewModel) :
+    public EditPlaylistRegionLogic(IStateService stateService, ViewModel.EditPlaylistRegionViewModel viewModel) :
         base(stateService)
     {
         this.viewModel = viewModel;

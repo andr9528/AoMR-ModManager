@@ -6,9 +6,9 @@ using ModManager.Presentation.Core;
 
 namespace ModManager.Presentation.Logic;
 
-public class CurrentStatusDisplayerLogic : BaseDisplayerLogic, IDisplayerLogic
+public class CurrentStatusRegionLogic : BaseDisplayerLogic, IDisplayerLogic
 {
-    public CurrentStatusDisplayerLogic(IStateService stateService) : base(stateService)
+    public CurrentStatusRegionLogic(IStateService stateService) : base(stateService)
     {
     }
 

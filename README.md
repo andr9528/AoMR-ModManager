@@ -65,3 +65,7 @@ My choice for serializer / deserializer of the json files modified by the progra
 ##### FastCloner
 
 Nuget package with functionality to copy classes deeply, for making new playsets from the 'myth-mod-status' json file.
+
+##### Serilog.Sinks.File
+
+Nuget package that allow my logging framework of choice, to log to files.

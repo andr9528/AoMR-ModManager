@@ -48,6 +48,8 @@ public partial class StateService : ObservableObject, IStateService
     {
         try
         {
+            logger.LogInformation("Initializing StateService...");
+
             CurrentModStatus = await InitializeCurrentModStatus();
 
             await fileService.CreateDefaultPlaysetsIfNotExists(CurrentModStatus);

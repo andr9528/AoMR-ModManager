@@ -12,7 +12,7 @@ public class FileService : IFileService
 {
     private readonly ILogger<FileService> logger;
     private const string MOD_STATUS_FILE_NAME = "myth-mod-status";
-    private const string MOD_MANAGER_FOLDER = "ModManager";
+    public const string MOD_MANAGER_FOLDER = "ModManager";
     private const string PLAYSET_FOLDER = "Playsets";
     private const string DEFAULT_OFF_PLAYSET_FILE_NAME = "all-off";
     private const string DEFAULT_ON_PLAYSET_FILE_NAME = "all-on";

@@ -5,8 +5,10 @@ using ModManager.Services;
 using ModManager.Strings;
 using Uno.Extensions.Localization;
 using System.Reflection;
+using Serilog;
 using Uno.Extensions.Configuration;
 using Uno.Resizetizer;
+using Path = System.IO.Path;
 
 namespace ModManager;
 
@@ -14,8 +16,8 @@ internal class Startup
 {
     private ICollection<IStartupModule> modules;
 
-    public IServiceCollection Services { get; protected set; }
-    public IServiceProvider ServiceProvider { get; protected set; }
+    private IServiceCollection Services { get; set; }
+    public IServiceProvider ServiceProvider { get; private set; }
     public IHost? Host { get; private set; }
 
     public Startup()
@@ -66,28 +68,26 @@ internal class Startup
 
     private void ConfigureLogging(HostBuilderContext builderContext, ILoggingBuilder logBuilder)
     {
-        // Configure log levels for different categories of logging
-        logBuilder.SetMinimumLevel(builderContext.HostingEnvironment.IsDevelopment()
-                ? LogLevel.Information
-                : LogLevel.Warning)
+        string logDirectory = Path.Combine(AppContext.BaseDirectory, FileService.MOD_MANAGER_FOLDER, "Logs");
+        Directory.CreateDirectory(logDirectory);
 
-            // Default filters for core Uno Platform namespaces
-            .CoreLogLevel(LogLevel.Warning);
+        string logFilePath = Path.Combine(logDirectory, "log.txt");
 
-        // Uno Platform namespace filter groups
-        // Uncomment individual methods to see more detailed logging
-        //// Generic Xaml events
-        //logBuilder.XamlLogLevel(LogLevel.Debug);
-        //// Layout specific messages
-        //logBuilder.XamlLayoutLogLevel(LogLevel.Debug);
-        //// Storage messages
-        //logBuilder.StorageLogLevel(LogLevel.Debug);
-        //// Binding related messages
-        //logBuilder.XamlBindingLogLevel(LogLevel.Debug);
-        //// Binder memory references tracking
-        //logBuilder.BinderMemoryReferenceLogLevel(LogLevel.Debug);
-        //// DevServer and HotReload related
-        //logBuilder.HotReloadCoreLogLevel(LogLevel.Information);
+        var loggerConfig = new LoggerConfiguration();
+        if (builderContext.HostingEnvironment.IsDevelopment())
+        {
+            loggerConfig.MinimumLevel.Information();
+        }
+        else
+        {
+            loggerConfig.MinimumLevel.Warning();
+        }
+
+        logBuilder.AddSerilog(loggerConfig.Enrich.FromLogContext().WriteTo.Console().WriteTo.File(logFilePath,
+                rollingInterval: RollingInterval.Day, retainedFileCountLimit: 7,
+                outputTemplate:
+                "{Timestamp:dd-MM-yyyy HH:mm:ss} [{Level:u3}] [{SourceContext}]: {Message:lj}{NewLine}{Exception}")
+            .CreateLogger());
     }
 
     public void SetupServices(IServiceCollection? services = null)
@@ -100,8 +100,12 @@ internal class Startup
             module.ConfigureServices(Services);
         }
 
-
         ServiceProvider = Services.BuildServiceProvider();
+
+        var logger = ServiceProvider.GetRequiredService<ILogger<Startup>>();
+        logger.LogInformation("");
+        logger.LogInformation("======== Application started at {Timestamp} ========",
+            DateTime.Now.ToString("dd-MM-yyyy HH:mm:ss"));
     }
 
     private void ConfigureServices(IServiceCollection services)

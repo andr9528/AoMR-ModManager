@@ -10,6 +10,7 @@ public static class ButtonFactory
             Padding = new Thickness(10, 5, 10, 5),
             HorizontalAlignment = HorizontalAlignment.Center,
             VerticalAlignment = VerticalAlignment.Center,
+            IsTabStop = false,
         };
 
         button.Style(Theme.Button.Styles.Filled);

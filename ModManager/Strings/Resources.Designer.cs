@@ -61,6 +61,24 @@ namespace ModManager.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Actions_Activate.
+        /// </summary>
+        public static string Actions_Activate {
+            get {
+                return ResourceManager.GetString("Actions_Activate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Actions_Indicator.
+        /// </summary>
+        public static string Actions_Indicator {
+            get {
+                return ResourceManager.GetString("Actions_Indicator", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Edit_Column_One_Header.
         /// </summary>
         public static string Edit_Column_One_Header {

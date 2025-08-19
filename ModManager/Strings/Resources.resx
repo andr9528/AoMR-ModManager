@@ -141,4 +141,10 @@
   <data name="Edit_Column_Two_Header" xml:space="preserve">
     <value>Edit_Column_Two_Header</value>
   </data>
+  <data name="Actions_Activate" xml:space="preserve">
+    <value>Actions_Activate</value>
+  </data>
+  <data name="Actions_Indicator" xml:space="preserve">
+    <value>Actions_Indicator</value>
+  </data>
 </root>

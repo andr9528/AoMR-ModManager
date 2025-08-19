@@ -18,7 +18,7 @@ public sealed partial class MainPage : Page
 
     private void AddElementsToGrid(Grid contentGrid)
     {
-        var selector = ActivatorUtilities.CreateInstance<PlaylistSelector>(App.Startup.ServiceProvider);
+        var selector = ActivatorUtilities.CreateInstance<PlaysetSelector>(App.Startup.ServiceProvider);
 
         contentGrid.Children.Add(selector.SetRow(0).SetColumn(0));
     }

@@ -6,11 +6,11 @@ using ModManager.Abstractions.Services;
 
 namespace ModManager.Presentation.Core;
 
-public abstract class BaseDisplayerLogic
+public abstract class BaseLogic
 {
     protected readonly IStateService StateService;
 
-    protected BaseDisplayerLogic(IStateService stateService)
+    protected BaseLogic(IStateService stateService)
     {
         StateService = stateService;
     }

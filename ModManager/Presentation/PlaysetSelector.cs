@@ -1,12 +1,13 @@
 using ModManager.Abstractions.Services;
 using ModManager.Presentation.Logic;
 using ModManager.Presentation.UserInterface;
+using ModManager.Presentation.ViewModel;
 
 namespace ModManager.Presentation;
 
-public sealed partial class PlaylistSelector : NavigationView
+public sealed partial class PlaysetSelector : NavigationView
 {
-    public PlaylistSelector(IFileService fileService, IStateService stateService)
+    public PlaysetSelector(IFileService fileService, IStateService stateService)
     {
         IsBackButtonVisible = NavigationViewBackButtonVisible.Collapsed;
         IsPaneToggleButtonVisible = false;
@@ -15,13 +16,13 @@ public sealed partial class PlaylistSelector : NavigationView
         PaneDisplayMode = NavigationViewPaneDisplayMode.LeftCompact;
         CompactPaneLength = 160;
 
-        DataContext = new ViewModel.PlaylistSelectorViewModel(stateService);
+        DataContext = new PlaylistSelectorViewModel(stateService);
 
         SetBinding(IsPaneOpenProperty,
-            new Binding() {Path = nameof(ViewModel.PlaylistSelectorViewModel.IsMenuOpen), Mode = BindingMode.TwoWay,});
+            new Binding() {Path = nameof(PlaylistSelectorViewModel.IsMenuOpen), Mode = BindingMode.TwoWay,});
 
-        var logic = new PlaylistSelectorLogic(fileService, stateService);
-        var ui = new PlaylistSelectorUserInterface(logic, (ViewModel.PlaylistSelectorViewModel) DataContext);
+        var logic = new PlaysetSelectorLogic(fileService, stateService);
+        var ui = new PlaysetSelectorUserInterface(logic, (PlaylistSelectorViewModel) DataContext);
 
         PaneCustomContent = ui.CreateNavigationPanel();
         Content = ui.CreateContentGrid();

@@ -7,6 +7,7 @@ public static class GridFactory
         return new Grid()
         {
             Margin = new Thickness(2),
+            IsTabStop = false,
         };
     }
 

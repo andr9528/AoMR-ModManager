@@ -8,8 +8,8 @@ using ModManager.Strings;
 
 namespace ModManager.Presentation.UserInterface;
 
-public class EditPlaylistRegionUserInterface : BaseModsDisplayerUserInterface<EditPlaylistRegionLogic,
-    EditPlaylistRegionViewModel>
+public class EditPlaysetRegionUserInterface : BaseModsDisplayerUserInterface<EditPlaysetRegionLogic,
+    EditPlaysetRegionViewModel>
 {
     private enum DataGridColumns
     {
@@ -20,9 +20,9 @@ public class EditPlaylistRegionUserInterface : BaseModsDisplayerUserInterface<Ed
 
     private readonly ITranslationService translationService;
 
-    public EditPlaylistRegionUserInterface(
-        EditPlaylistRegionLogic logic, ITranslationService translationService,
-        EditPlaylistRegionViewModel viewModel) : base(logic, viewModel)
+    public EditPlaysetRegionUserInterface(
+        EditPlaysetRegionLogic logic, ITranslationService translationService,
+        EditPlaysetRegionViewModel viewModel) : base(logic, viewModel)
     {
         this.translationService = translationService;
     }
@@ -54,7 +54,7 @@ public class EditPlaylistRegionUserInterface : BaseModsDisplayerUserInterface<Ed
 
         var sourceBinding = new Binding()
         {
-            Path = nameof(EditPlaylistRegionViewModel.ShownMods),
+            Path = nameof(EditPlaysetRegionViewModel.ShownMods),
         };
 
         return ListViewFactory.CreateListView(columnSizes.ToArray(), columnHeaders, TemplateFactory, sourceBinding);
@@ -123,7 +123,7 @@ public class EditPlaylistRegionUserInterface : BaseModsDisplayerUserInterface<Ed
 
         var textBinding = new Binding()
         {
-            Path = nameof(EditPlaylistRegionViewModel.HeaderText),
+            Path = nameof(EditPlaysetRegionViewModel.HeaderText),
         };
 
         label.HorizontalAlignment = HorizontalAlignment.Center;

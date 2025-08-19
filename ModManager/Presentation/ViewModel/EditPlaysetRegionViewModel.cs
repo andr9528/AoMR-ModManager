@@ -5,14 +5,14 @@ using ModManager.Strings;
 
 namespace ModManager.Presentation.ViewModel;
 
-public partial class EditPlaylistRegionViewModel : ObservableObject, IViewModel
+public partial class EditPlaysetRegionViewModel : ObservableObject, IViewModel
 {
     private readonly ITranslationService translationService;
 
     [ObservableProperty] private string headerText;
     [ObservableProperty] private ObservableCollection<IMod> shownMods;
 
-    public EditPlaylistRegionViewModel(IStateService stateService, ITranslationService translationService)
+    public EditPlaysetRegionViewModel(IStateService stateService, ITranslationService translationService)
     {
         this.translationService = translationService;
         StateService = stateService;

@@ -3,25 +3,24 @@ using CommunityToolkit.WinUI.UI.Controls;
 using ModManager.Abstractions.Models;
 using ModManager.Extensions;
 using ModManager.Presentation.Converter;
+using ModManager.Presentation.Core;
 using ModManager.Presentation.Factory;
 using ModManager.Presentation.Logic;
 
 namespace ModManager.Presentation.UserInterface;
 
-public class PlaylistSelectorUserInterface
+public class PlaysetSelectorUserInterface : BaseUserInterface
 {
-    //private const string DELETE_UNICODE = "&#xE710;";
-
     private enum DataGridColumns
     {
         PLAYSETS = 0,
         ACTIONS = 1,
     }
 
-    private readonly PlaylistSelectorLogic logic;
+    private readonly PlaysetSelectorLogic logic;
     private readonly ViewModel.PlaylistSelectorViewModel viewModel;
 
-    public PlaylistSelectorUserInterface(PlaylistSelectorLogic logic, ViewModel.PlaylistSelectorViewModel viewModel)
+    public PlaysetSelectorUserInterface(PlaysetSelectorLogic logic, ViewModel.PlaylistSelectorViewModel viewModel)
     {
         this.logic = logic;
         this.viewModel = viewModel;
@@ -155,17 +154,21 @@ public class PlaylistSelectorUserInterface
         };
     }
 
-    public Grid CreateContentGrid()
+    /// <inheritdoc />
+    protected override void ConfigureContentGrid(Grid grid)
     {
-        Grid grid = GridFactory.CreateDefaultGrid();
-        grid.DefineColumns(sizes: [50, 50,]).DefineRows(sizes: [80, 20,]);
+        grid.DefineColumns(sizes: [50, 50,]).DefineRows(sizes: [85, 15,]);
+    }
 
-        var currentStatus = ActivatorUtilities.CreateInstance<CurrentStatusRegion>(App.Startup.ServiceProvider);
-        var editPlaylist = ActivatorUtilities.CreateInstance<EditPlaylistRegion>(App.Startup.ServiceProvider);
+    /// <inheritdoc />
+    protected override void AddChildrenToGrid(Grid grid)
+    {
+        var currentStatusRegion = ActivatorUtilities.CreateInstance<CurrentStatusRegion>(App.Startup.ServiceProvider);
+        var editPlaysetRegion = ActivatorUtilities.CreateInstance<EditPlaysetRegion>(App.Startup.ServiceProvider);
+        var playsetActionsRegion = ActivatorUtilities.CreateInstance<PlaysetActionsRegion>(App.Startup.ServiceProvider);
 
-        grid.Children.Add(editPlaylist.SetRow(0).SetColumn(0));
-        grid.Children.Add(currentStatus.SetRow(0).SetColumn(1));
-
-        return grid;
+        grid.Children.Add(editPlaysetRegion.SetRow(0).SetColumn(0));
+        grid.Children.Add(currentStatusRegion.SetRow(0).SetColumn(1));
+        grid.Children.Add(playsetActionsRegion.SetRow(1).SetColumn(0, 2));
     }
 }

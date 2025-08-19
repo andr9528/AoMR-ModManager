@@ -141,4 +141,10 @@
   <data name="Edit_Column_Two_Header" xml:space="preserve">
     <value>Indicators</value>
   </data>
+  <data name="Actions_Activate" xml:space="preserve">
+    <value>Activate Playset</value>
+  </data>
+  <data name="Actions_Indicator" xml:space="preserve">
+    <value>Playset Active?</value>
+  </data>
 </root>

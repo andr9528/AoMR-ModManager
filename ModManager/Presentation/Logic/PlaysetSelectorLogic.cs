@@ -4,19 +4,19 @@ using ModManager.Abstractions.Services;
 
 namespace ModManager.Presentation.Logic;
 
-public class PlaylistSelectorLogic
+public class PlaysetSelectorLogic
 {
     private readonly IFileService fileService;
     private readonly IStateService stateService;
-    private readonly ILogger<PlaylistSelectorLogic> logger;
+    private readonly ILogger<PlaysetSelectorLogic> logger;
     private bool suppressSelectionCahngeDueToButtonClick;
 
-    public PlaylistSelectorLogic(IFileService fileService, IStateService stateService)
+    public PlaysetSelectorLogic(IFileService fileService, IStateService stateService)
     {
         this.fileService = fileService;
         this.stateService = stateService;
         logger =
-            ActivatorUtilities.GetServiceOrCreateInstance<ILogger<PlaylistSelectorLogic>>(App.Startup.ServiceProvider);
+            ActivatorUtilities.GetServiceOrCreateInstance<ILogger<PlaysetSelectorLogic>>(App.Startup.ServiceProvider);
     }
 
     public void DeleteButtonClicked(object sender, RoutedEventArgs e)

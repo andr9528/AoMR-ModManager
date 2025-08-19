@@ -6,8 +6,8 @@ using ModManager.Presentation.Factory;
 
 namespace ModManager.Presentation.Core;
 
-public abstract class BaseModsDisplayerUserInterface<TLogic, TViewModel> where TLogic : class, IDisplayerLogic
-    where TViewModel : class, IViewModel
+public abstract class BaseModsDisplayerUserInterface<TLogic, TViewModel> : BaseUserInterface
+    where TLogic : class, IDisplayerLogic where TViewModel : class, IViewModel
 {
     protected readonly TLogic Logic;
     protected readonly TViewModel ViewModel;
@@ -17,19 +17,6 @@ public abstract class BaseModsDisplayerUserInterface<TLogic, TViewModel> where T
         Logic = logic;
         ViewModel = viewModel;
     }
-
-    public Grid CreateContentGrid()
-    {
-        Grid grid = GridFactory.CreateDefaultGrid();
-
-        ConfigureContentGrid(grid);
-        AddChildrenToGrid(grid);
-
-        return grid;
-    }
-
-    protected abstract void ConfigureContentGrid(Grid grid);
-    protected abstract void AddChildrenToGrid(Grid grid);
 
     protected Grid BuildIndicatorsTemplate()
     {
@@ -97,8 +84,8 @@ public abstract class BaseModsDisplayerUserInterface<TLogic, TViewModel> where T
             Path = nameof(IMod.IsLocalMod),
             Converter = new BooleanToBrushConverter()
             {
-                TrueBrush = new SolidColorBrush(Colors.LimeGreen.WithAlpha(0.4)),
-                FalseBrush = new SolidColorBrush(Colors.IndianRed.WithAlpha(0.4)),
+                TrueBrush = new SolidColorBrush(Constants.UiColors.OnButtonColor),
+                FalseBrush = new SolidColorBrush(Constants.UiColors.OffButtonColor),
             },
         };
 

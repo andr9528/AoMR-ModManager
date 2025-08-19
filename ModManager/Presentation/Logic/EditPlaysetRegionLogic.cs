@@ -5,11 +5,11 @@ using ModManager.Presentation.Core;
 
 namespace ModManager.Presentation.Logic;
 
-public class EditPlaylistRegionLogic : BaseDisplayerLogic, IDisplayerLogic
+public class EditPlaysetRegionLogic : BaseLogic, IDisplayerLogic
 {
-    private readonly ViewModel.EditPlaylistRegionViewModel viewModel;
+    private readonly ViewModel.EditPlaysetRegionViewModel viewModel;
 
-    public EditPlaylistRegionLogic(IStateService stateService, ViewModel.EditPlaylistRegionViewModel viewModel) :
+    public EditPlaysetRegionLogic(IStateService stateService, ViewModel.EditPlaysetRegionViewModel viewModel) :
         base(stateService)
     {
         this.viewModel = viewModel;

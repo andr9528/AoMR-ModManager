@@ -13,7 +13,7 @@ public class ModStatus : IModStatus
     public ObservableCollection<IMod> Mods { get; set; }
 
     [JsonConstructor]
-    public ModStatus(List<object> actions, List<Mod> mods)
+    public ModStatus(List<object> actions, ObservableCollection<Mod> mods)
     {
         Actions = actions;
         Mods = new ObservableCollection<IMod>(mods);

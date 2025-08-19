@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Text.Json;
 using ModManager.Abstractions.Services;
 using ModManager.Abstractions.Startup;
@@ -68,19 +69,19 @@ internal class Startup
 
     private void ConfigureLogging(HostBuilderContext builderContext, ILoggingBuilder logBuilder)
     {
-        string logDirectory = Path.Combine(AppContext.BaseDirectory, FileService.MOD_MANAGER_FOLDER, "Logs");
+        string logDirectory = Path.Combine(Environment.CurrentDirectory, FileService.MOD_MANAGER_FOLDER, "Logs");
         Directory.CreateDirectory(logDirectory);
 
-        string logFilePath = Path.Combine(logDirectory, "log.txt");
+        string logFilePath = Path.Combine(logDirectory, "log-.log");
 
         var loggerConfig = new LoggerConfiguration();
         if (builderContext.HostingEnvironment.IsDevelopment())
         {
-            loggerConfig.MinimumLevel.Information();
+            loggerConfig.MinimumLevel.Debug();
         }
         else
         {
-            loggerConfig.MinimumLevel.Warning();
+            loggerConfig.MinimumLevel.Information();
         }
 
         logBuilder.AddSerilog(loggerConfig.Enrich.FromLogContext().WriteTo.Console().WriteTo.File(logFilePath,
@@ -106,6 +107,8 @@ internal class Startup
         logger.LogInformation("");
         logger.LogInformation("======== Application started at {Timestamp} ========",
             DateTime.Now.ToString("dd-MM-yyyy HH:mm:ss"));
+        logger.LogInformation("Current Directory: {CurrentDirectory}", Environment.CurrentDirectory);
+        logger.LogInformation("Base Directory: {BaseDirectory}", AppContext.BaseDirectory);
     }
 
     private void ConfigureServices(IServiceCollection services)

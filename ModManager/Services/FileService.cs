@@ -56,8 +56,7 @@ public class FileService : IFileService
 
     private string GetExecutionDirectory()
     {
-        string exePath = Assembly.GetExecutingAssembly().Location;
-        return Path.GetDirectoryName(exePath) ?? string.Empty;
+        return Environment.CurrentDirectory;
     }
 
     private string GetModStatusFilePath()

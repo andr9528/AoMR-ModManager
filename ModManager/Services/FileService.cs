@@ -212,6 +212,8 @@ public class FileService : IFileService
                     playsetMod.InstallCrc = mod.InstallCrc;
                     playsetMod.InstallTime = mod.InstallTime;
                     playsetMod.LastUpdate = mod.LastUpdate;
+                    playsetMod.Path = mod.Path;
+                    playsetMod.Title = mod.Title;
                 }
             }
 

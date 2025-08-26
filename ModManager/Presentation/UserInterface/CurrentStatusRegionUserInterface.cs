@@ -23,7 +23,8 @@ public class
     {
         ACTIONS = 0,
         MODS = 1,
-        INDICATORS = 2,
+        AUTHOR = 2,
+        INDICATORS = 3,
     }
 
     public CurrentStatusRegionUserInterface(
@@ -65,7 +66,11 @@ public class
     {
         var columns = Enum.GetValues<DataGridColumns>();
         var columnHeaders = columns.Select(BuildColumnHeader).ToList();
-        IList<int> columnSizes = [30, 70, 50,];
+        IList<int> columnSizes =
+        [
+            Constants.ColumnWidth.ACTIONS, Constants.ColumnWidth.TITLE,
+            Constants.ColumnWidth.AUTHOR, Constants.ColumnWidth.INDICATORS,
+        ];
 
         var sourceBinding = new Binding()
         {
@@ -87,6 +92,7 @@ public class
         {
             DataGridColumns.ACTIONS => BuildActionsTemplate(),
             DataGridColumns.MODS => BuildModsTemplate(),
+            DataGridColumns.AUTHOR => BuildAuthorTemplate(),
             DataGridColumns.INDICATORS => BuildIndicatorsTemplate(),
             var _ => throw new ArgumentOutOfRangeException(nameof(column), column, null),
         };
@@ -101,9 +107,10 @@ public class
     {
         return column switch
         {
-            DataGridColumns.ACTIONS => ResourceKeys.Status.COLUMN_ONE_HEADER,
-            DataGridColumns.MODS => ResourceKeys.Status.COLUMN_TWO_HEADER,
-            DataGridColumns.INDICATORS => ResourceKeys.Status.COLUMN_THREE_HEADER,
+            DataGridColumns.ACTIONS => ResourceKeys.Column.ACTIONS,
+            DataGridColumns.MODS => ResourceKeys.Column.MODS,
+            DataGridColumns.AUTHOR => ResourceKeys.Column.AUTHOR,
+            DataGridColumns.INDICATORS => ResourceKeys.Column.INDICATORS,
             var _ => throw new ArgumentOutOfRangeException(nameof(column), column, null),
         };
     }

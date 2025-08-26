@@ -79,29 +79,38 @@ namespace ModManager.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Edit_Column_One_Header.
+        ///   Looks up a localized string similar to Column_Actions.
         /// </summary>
-        public static string Edit_Column_One_Header {
+        public static string Column_Actions {
             get {
-                return ResourceManager.GetString("Edit_Column_One_Header", resourceCulture);
+                return ResourceManager.GetString("Column_Actions", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Edit_Column_Three_Header.
+        ///   Looks up a localized string similar to Column_Author.
         /// </summary>
-        public static string Edit_Column_Three_Header {
+        public static string Column_Author {
             get {
-                return ResourceManager.GetString("Edit_Column_Three_Header", resourceCulture);
+                return ResourceManager.GetString("Column_Author", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Edit_Column_Two_Header.
+        ///   Looks up a localized string similar to Column_Indicators.
         /// </summary>
-        public static string Edit_Column_Two_Header {
+        public static string Column_Indicators {
             get {
-                return ResourceManager.GetString("Edit_Column_Two_Header", resourceCulture);
+                return ResourceManager.GetString("Column_Indicators", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Column_Mods.
+        /// </summary>
+        public static string Column_Mods {
+            get {
+                return ResourceManager.GetString("Column_Mods", resourceCulture);
             }
         }
         
@@ -111,33 +120,6 @@ namespace ModManager.Strings {
         public static string Edit_Header {
             get {
                 return ResourceManager.GetString("Edit_Header", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Status_Column_One_Header.
-        /// </summary>
-        public static string Status_Column_One_Header {
-            get {
-                return ResourceManager.GetString("Status_Column_One_Header", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Status_Column_Three_Header.
-        /// </summary>
-        public static string Status_Column_Three_Header {
-            get {
-                return ResourceManager.GetString("Status_Column_Three_Header", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Status_Column_Two_Header.
-        /// </summary>
-        public static string Status_Column_Two_Header {
-            get {
-                return ResourceManager.GetString("Status_Column_Two_Header", resourceCulture);
             }
         }
         

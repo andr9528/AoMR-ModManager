@@ -35,4 +35,12 @@ public static class Constants
     {
         public const int SECTION_HEADER_FONT_SIZE = 18;
     }
+
+    public static class ColumnWidth
+    {
+        public const int ACTIONS = 20;
+        public const int AUTHOR = 20;
+        public const int TITLE = 50;
+        public const int INDICATORS = 50;
+    }
 }

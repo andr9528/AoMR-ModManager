@@ -53,13 +53,28 @@ public abstract class BaseModsDisplayerUserInterface<TLogic, TViewModel> : BaseU
     {
         Grid grid = GridFactory.CreateLeftAlignedGrid();
 
-        TextBlock modsTitle = TextBlockFactory.CreateDefaultTextBlock();
+        TextBlock modTitle = TextBlockFactory.CreateDefaultTextBlock();
 
         var titleBinding = new Binding() {Path = nameof(IMod.Title),};
 
-        modsTitle.SetBinding(TextBlock.TextProperty, titleBinding);
+        modTitle.SetBinding(TextBlock.TextProperty, titleBinding);
 
-        grid.Children.Add(modsTitle);
+        grid.Children.Add(modTitle);
+
+        return grid;
+    }
+
+    protected Grid BuildAuthorTemplate()
+    {
+        Grid grid = GridFactory.CreateDefaultGrid();
+
+        TextBlock modAuthor = TextBlockFactory.CreateDefaultTextBlock();
+
+        var authorBinding = new Binding() {Path = nameof(IMod.Author),};
+
+        modAuthor.SetBinding(TextBlock.TextProperty, authorBinding);
+
+        grid.Children.Add(modAuthor);
 
         return grid;
     }

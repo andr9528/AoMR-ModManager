@@ -14,8 +14,9 @@ public class EditPlaysetRegionUserInterface : BaseModsDisplayerUserInterface<Edi
     private enum DataGridColumns
     {
         MODS = 0,
-        INDICATORS = 1,
-        ACTIONS = 2,
+        AUTHOR = 1,
+        INDICATORS = 2,
+        ACTIONS = 3,
     }
 
     private readonly ITranslationService translationService;
@@ -50,7 +51,11 @@ public class EditPlaysetRegionUserInterface : BaseModsDisplayerUserInterface<Edi
     {
         var columns = Enum.GetValues<DataGridColumns>();
         var columnHeaders = columns.Select(BuildColumnHeader).ToList();
-        IList<int> columnSizes = [70, 50, 30,];
+        IList<int> columnSizes =
+        [
+            Constants.ColumnWidth.TITLE, Constants.ColumnWidth.AUTHOR,
+            Constants.ColumnWidth.INDICATORS, Constants.ColumnWidth.ACTIONS,
+        ];
 
         var sourceBinding = new Binding()
         {
@@ -71,6 +76,7 @@ public class EditPlaysetRegionUserInterface : BaseModsDisplayerUserInterface<Edi
         {
             DataGridColumns.ACTIONS => BuildActionsTemplate(),
             DataGridColumns.MODS => BuildModsTemplate(),
+            DataGridColumns.AUTHOR => BuildAuthorTemplate(),
             DataGridColumns.INDICATORS => BuildIndicatorsTemplate(),
             var _ => throw new ArgumentOutOfRangeException(nameof(column), column, null),
         };
@@ -110,9 +116,10 @@ public class EditPlaysetRegionUserInterface : BaseModsDisplayerUserInterface<Edi
     {
         return column switch
         {
-            DataGridColumns.MODS => ResourceKeys.Edit.COLUMN_ONE_HEADER,
-            DataGridColumns.INDICATORS => ResourceKeys.Edit.COLUMN_TWO_HEADER,
-            DataGridColumns.ACTIONS => ResourceKeys.Edit.COLUMN_THREE_HEADER,
+            DataGridColumns.MODS => ResourceKeys.Column.MODS,
+            DataGridColumns.AUTHOR => ResourceKeys.Column.AUTHOR,
+            DataGridColumns.INDICATORS => ResourceKeys.Column.INDICATORS,
+            DataGridColumns.ACTIONS => ResourceKeys.Column.ACTIONS,
             var _ => throw new ArgumentOutOfRangeException(nameof(column), column, null),
         };
     }

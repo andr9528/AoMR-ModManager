@@ -123,23 +123,17 @@
   <data name="Status_Header" xml:space="preserve">
     <value>Status_Header</value>
   </data>
-  <data name="Status_Column_One_Header" xml:space="preserve">
-    <value>Status_Column_One_Header</value>
+  <data name="Column_Mods" xml:space="preserve">
+    <value>Column_Mods</value>
   </data>
-  <data name="Edit_Column_One_Header" xml:space="preserve">
-    <value>Edit_Column_One_Header</value>
+  <data name="Column_Author" xml:space="preserve">
+    <value>Column_Author</value>
   </data>
-  <data name="Status_Column_Three_Header" xml:space="preserve">
-    <value>Status_Column_Three_Header</value>
+  <data name="Column_Actions" xml:space="preserve">
+    <value>Column_Actions</value>
   </data>
-  <data name="Edit_Column_Three_Header" xml:space="preserve">
-    <value>Edit_Column_Three_Header</value>
-  </data>
-  <data name="Status_Column_Two_Header" xml:space="preserve">
-    <value>Status_Column_Two_Header</value>
-  </data>
-  <data name="Edit_Column_Two_Header" xml:space="preserve">
-    <value>Edit_Column_Two_Header</value>
+  <data name="Column_Indicators" xml:space="preserve">
+    <value>Column_Indicators</value>
   </data>
   <data name="Actions_Activate" xml:space="preserve">
     <value>Actions_Activate</value>

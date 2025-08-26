@@ -9,6 +9,8 @@ public interface IStateService
     IPlayset? EditingPlayset { get; set; }
     ObservableCollection<IPlayset> Playsets { get; set; }
     bool IsPlaysetActive { get; set; }
+    bool PlaysetHasMissingMods { get; set; }
+    bool CanActivatePlayset { get; }
 
     public event EventHandler<IModStatus?> CurrentModStatusChanged;
     public event EventHandler<IPlayset?> EditingPlaysetChanged;

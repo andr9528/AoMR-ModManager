@@ -84,18 +84,17 @@ public class PlaysetActionsRegionUserInterface : BaseUserInterface
 
         var backgroundBinding = new Binding()
         {
-            Path = $"{nameof(viewModel.StateService)}.{nameof(viewModel.StateService.IsPlaysetActive)}",
+            Path = $"{nameof(viewModel.StateService)}.{nameof(viewModel.StateService.CanActivatePlayset)}",
             Converter = new BooleanToBrushConverter()
             {
-                TrueBrush = new SolidColorBrush(Constants.UiColors.DisabledButtonColor),
-                FalseBrush = new SolidColorBrush(Constants.UiColors.InteractableButtonColor),
+                TrueBrush = new SolidColorBrush(Constants.UiColors.InteractableButtonColor),
+                FalseBrush = new SolidColorBrush(Constants.UiColors.DisabledButtonColor),
             },
         };
 
         var hitTestBinding = new Binding()
         {
-            Path = $"{nameof(viewModel.StateService)}.{nameof(viewModel.StateService.IsPlaysetActive)}",
-            Converter = new BooleanInverterConverter(),
+            Path = $"{nameof(viewModel.StateService)}.{nameof(viewModel.StateService.CanActivatePlayset)}",
         };
 
         button.SetBinding(UIElement.IsHitTestVisibleProperty, hitTestBinding);

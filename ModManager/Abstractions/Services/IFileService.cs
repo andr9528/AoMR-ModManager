@@ -11,6 +11,7 @@ public interface IFileService
     Task<IList<IPlayset>> LoadPlaysets();
     Task CreateDefaultPlaysetsIfNotExists(IModStatus currentModStatus);
     Task UpdatePlaysetsProperties(IModStatus currentModStatus, IList<IPlayset> playsets);
+    Task UpdatePlaysetProperties(IModStatus currentModStatus, IPlayset playset);
     Task NewPlayset(IPlayset playset, bool makeEmptyPlayset = true);
     Task SaveModStatusChanges(IModStatus? modStatus);
 }

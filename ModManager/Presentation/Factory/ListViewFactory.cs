@@ -55,12 +55,7 @@ public static class ListViewFactory
 
         var backgroundBinding = new Binding()
         {
-            Path = nameof(IMod.IsEnabled),
-            Converter = new BooleanToBrushConverter()
-            {
-                TrueBrush = new SolidColorBrush(Constants.UiColors.OnRowColor),
-                FalseBrush = new SolidColorBrush(Constants.UiColors.OffRowColor),
-            },
+            Path = nameof(IMod.RowBrush),
         };
 
         border.SetBinding(FrameworkElement.BackgroundProperty, backgroundBinding);

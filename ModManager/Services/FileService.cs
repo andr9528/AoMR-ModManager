@@ -193,37 +193,85 @@ public class FileService : IFileService
     {
         try
         {
-            foreach (IMod mod in currentModStatus.Mods)
-            {
-                foreach (IPlayset playset in playsets)
-                {
-                    IMod? playsetMod = playset.ModStatus.Mods.FirstOrDefault(x => x.IsMatchingMod(mod));
-
-                    if (playsetMod == null)
-                    {
-                        IMod clonedMod = FastCloner.FastCloner.DeepClone(mod) ??
-                                         throw new InvalidOperationException($"Failed to Clone the mod: {mod.Title}");
-                        clonedMod.IsHidden = true;
-                        playset.ModStatus.Mods.Add(clonedMod);
-                        continue;
-                    }
-
-                    playsetMod.Description = mod.Description;
-                    playsetMod.InstallCrc = mod.InstallCrc;
-                    playsetMod.InstallTime = mod.InstallTime;
-                    playsetMod.LastUpdate = mod.LastUpdate;
-                    playsetMod.Path = mod.Path;
-                    playsetMod.Title = mod.Title;
-                }
-            }
-
+            await Task.WhenAll(playsets.Select(x => UpdatePlaysetProperties(currentModStatus, x)));
             await Task.WhenAll(playsets.Select(SavePlayset));
+
+            logger.LogInformation("Updated and saved all playsets with current mod properties.");
         }
         catch (Exception e)
         {
-            logger.LogError(e, "Failed to update playsets properties.");
+            logger.LogError(e, "Failed to update and/or save updated playsets properties.");
             throw;
         }
+    }
+
+    /// <inheritdoc />
+    public Task UpdatePlaysetProperties(IModStatus currentModStatus, IPlayset playset)
+    {
+        try
+        {
+            AddNewModsToPlayset(currentModStatus, playset);
+            UpdateModPropertiesOfPlayset(currentModStatus, playset);
+
+            logger.LogInformation("Updated playset '{PlaysetName}' with current mod properties.", playset.FileName);
+
+            return Task.CompletedTask;
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Failed to update '{PlaysetName}'.", playset.FileName);
+            throw;
+        }
+    }
+
+    private void UpdateModPropertiesOfPlayset(IModStatus currentModStatus, IPlayset playset)
+    {
+        foreach (IMod mod in playset.ModStatus.Mods)
+        {
+            IMod? currentMod = currentModStatus.Mods.FirstOrDefault(x => x.IsMatchingMod(mod));
+
+            if (currentMod == null)
+            {
+                mod.IsMissing = true;
+                logger.LogWarning(
+                    "Playset '{PlaysetName}' contains mod missing from current Status - '{ModName}'. Marking that mod as missing in Playset.",
+                    playset.FileName, mod.Title);
+
+                continue;
+            }
+
+            mod.Description = currentMod.Description;
+            mod.InstallCrc = currentMod.InstallCrc;
+            mod.InstallTime = currentMod.InstallTime;
+            mod.LastUpdate = currentMod.LastUpdate;
+            mod.Path = currentMod.Path;
+            mod.Title = currentMod.Title;
+        }
+    }
+
+    private void AddNewModsToPlayset(IModStatus currentModStatus, IPlayset playset)
+    {
+        var newMods = currentModStatus.Mods.Where(x => !playset.ModStatus.Mods.Any(x.IsMatchingMod)).ToList();
+
+        if (!newMods.Any())
+        {
+            return;
+        }
+
+        logger.LogInformation("Found {NewModCount} new mods to add to playset '{PlaysetName}'.", newMods.Count,
+            playset.FileName);
+
+        playset.ModStatus.Mods.AddRange(newMods.Select(mod =>
+        {
+            IMod clonedMod = FastCloner.FastCloner.DeepClone(mod) ??
+                             throw new InvalidOperationException($"Failed to Clone the mod: {mod.Title}");
+            clonedMod.IsHidden = true;
+
+            logger.LogInformation("Added new mod '{ModTitle}' to playset '{PlaysetName}' as hidden.", clonedMod.Title,
+                playset.FileName);
+
+            return clonedMod;
+        }));
     }
 
     /// <inheritdoc />

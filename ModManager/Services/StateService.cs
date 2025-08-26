@@ -16,8 +16,17 @@ public partial class StateService : ObservableObject, IStateService
     private readonly ILocalizationService localizationService;
     [ObservableProperty] private IModStatus? currentModStatus;
     [ObservableProperty] private IPlayset? editingPlayset;
-    [ObservableProperty] private bool isPlaysetActive;
+
+    [ObservableProperty] [NotifyPropertyChangedFor(nameof(CanActivatePlayset))]
+    private bool isPlaysetActive;
+
+    [ObservableProperty] [NotifyPropertyChangedFor(nameof(CanActivatePlayset))]
+    private bool playsetHasMissingMods;
+
     [ObservableProperty] private ObservableCollection<IPlayset> playsets;
+
+    /// <inheritdoc />
+    public bool CanActivatePlayset => !IsPlaysetActive && !PlaysetHasMissingMods;
 
     public event EventHandler<IModStatus?> CurrentModStatusChanged;
     public event EventHandler<IPlayset?> EditingPlaysetChanged;
@@ -59,6 +68,7 @@ public partial class StateService : ObservableObject, IStateService
             await fileService.UpdatePlaysetsProperties(CurrentModStatus, Playsets);
 
             EditingPlayset = InitializeEditingPlayset();
+            PlaysetHasMissingMods = EditingPlayset.ModStatus.Mods.Any(x => x.IsMissing);
 
             AttachEventHandlers();
 
@@ -156,6 +166,8 @@ public partial class StateService : ObservableObject, IStateService
         }
 
         ReevaluateIsPlaysetActiveState();
+
+        PlaysetHasMissingMods = EditingPlayset.ModStatus.Mods.Any(x => x.IsMissing);
 
         EditingPlaysetChanged -= OnEditingPlaysetChanged;
 

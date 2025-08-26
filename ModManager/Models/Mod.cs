@@ -8,12 +8,17 @@ namespace ModManager.Models;
 
 public partial class Mod : ObservableObject, IMod
 {
-    [ObservableProperty] [property: JsonProperty(IMod.JSON_PROPERTY_ENABLED_NAME)]
+    [ObservableProperty]
+    [property: JsonProperty(IMod.JSON_PROPERTY_ENABLED_NAME)]
+    [NotifyPropertyChangedFor(nameof(RowBrush))]
     private bool isEnabled;
 
     [ObservableProperty] private bool isHidden;
     [ObservableProperty] [property: JsonIgnore] private bool isHiddenSibling;
     [ObservableProperty] private int priority;
+
+    [ObservableProperty] [property: JsonIgnore] [NotifyPropertyChangedFor(nameof(RowBrush))]
+    private bool isMissing;
 
     public event EventHandler<bool> IsHiddenChanged;
     public event EventHandler<bool> IsHiddenSiblingChanged;
@@ -49,6 +54,25 @@ public partial class Mod : ObservableObject, IMod
     /// <inheritdoc />
     [JsonIgnore]
     public bool IsLocalMod => Path.Contains($"local", StringComparison.InvariantCultureIgnoreCase);
+
+    [JsonIgnore] public Brush RowBrush => GetRowBrush();
+
+    private SolidColorBrush GetRowBrush()
+    {
+        if (IsMissing && IsLocalMod)
+        {
+            return new SolidColorBrush(Constants.UiColors.MissingLocalRowColor);
+        }
+
+        if (IsMissing)
+        {
+            return new SolidColorBrush(Constants.UiColors.MissingRowColor);
+        }
+
+        return IsEnabled
+            ? new SolidColorBrush(Constants.UiColors.OnRowColor)
+            : new SolidColorBrush(Constants.UiColors.OffRowColor);
+    }
 
     partial void OnIsHiddenChanged(bool oldValue, bool newValue)
     {

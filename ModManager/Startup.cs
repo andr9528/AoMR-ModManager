@@ -77,7 +77,8 @@ internal class Startup
         var loggerConfig = new LoggerConfiguration();
         if (builderContext.HostingEnvironment.IsDevelopment())
         {
-            loggerConfig.MinimumLevel.Debug();
+            //loggerConfig.MinimumLevel.Debug();
+            loggerConfig.MinimumLevel.Information();
         }
         else
         {

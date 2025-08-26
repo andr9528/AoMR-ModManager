@@ -32,4 +32,6 @@ public interface IMod
 
     [JsonIgnore] public bool IsLocalMod { get; }
     [JsonIgnore] public bool IsHiddenSibling { get; set; }
+    [JsonIgnore] public bool IsMissing { get; set; }
+    [JsonIgnore] public Brush RowBrush { get; }
 }

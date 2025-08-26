@@ -1,4 +1,6 @@
+using Windows.Foundation;
 using ModManager.Abstractions.Models;
+using ModManager.Presentation.Factory;
 using Newtonsoft.Json;
 
 // They are valid, as code would throw exception without them.
@@ -57,21 +59,31 @@ public partial class Mod : ObservableObject, IMod
 
     [JsonIgnore] public Brush RowBrush => GetRowBrush();
 
-    private SolidColorBrush GetRowBrush()
+    private Brush GetRowBrush()
     {
-        if (IsMissing && IsLocalMod)
+        if (!IsMissing)
         {
-            return new SolidColorBrush(Constants.UiColors.MissingLocalRowColor);
+            return IsEnabled
+                ? new SolidColorBrush(Constants.UiColors.OnRowColor)
+                : new SolidColorBrush(Constants.UiColors.OffRowColor);
         }
 
-        if (IsMissing)
+        GradientStopCollection missingGradientStops = ColorFactory.CreateStripedCollection(
+            Constants.UiColors.MissingRowColor,
+            IsEnabled ? Constants.UiColors.OnRowColor : Constants.UiColors.OffButtonColor, 30);
+        var transform = new RotateTransform()
         {
-            return new SolidColorBrush(Constants.UiColors.MissingRowColor);
-        }
+            CenterX = 0.5, CenterY = 0.5,
+            Angle = 15,
+        };
 
-        return IsEnabled
-            ? new SolidColorBrush(Constants.UiColors.OnRowColor)
-            : new SolidColorBrush(Constants.UiColors.OffRowColor);
+        return new LinearGradientBrush()
+        {
+            StartPoint = new Point(-1, 0),
+            EndPoint = new Point(1, 0),
+            GradientStops = missingGradientStops,
+            RelativeTransform = transform,
+        };
     }
 
     partial void OnIsHiddenChanged(bool oldValue, bool newValue)

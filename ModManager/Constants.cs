@@ -27,8 +27,7 @@ public static class Constants
         public static Color InteractableButtonColor = Colors.Teal.WithAlpha(0.4);
         public static Color InformationButtonColor = Colors.CadetBlue.WithAlpha(0.4);
         public static Color RowBorderColor = Colors.Black;
-        public static Color MissingRowColor = Colors.Teal.WithAlpha(0.2);
-        public static Color MissingLocalRowColor = Colors.DimGray.WithAlpha(0.2);
+        public static Color MissingRowColor = Colors.DarkOrange.WithAlpha(0.4);
     }
 
     public static class Fonts

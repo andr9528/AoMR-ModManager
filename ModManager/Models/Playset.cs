@@ -2,8 +2,10 @@ using ModManager.Abstractions.Models;
 
 namespace ModManager.Models;
 
-public class Playset : IPlayset
+public partial class Playset : ObservableObject, IPlayset
 {
+    [ObservableProperty] private string fileName;
+
     public Playset(string fileName, IModStatus modStatus)
     {
         ModStatus = modStatus;
@@ -12,7 +14,4 @@ public class Playset : IPlayset
 
     /// <inheritdoc />
     public IModStatus ModStatus { get; set; }
-
-    /// <inheritdoc />
-    public string FileName { get; set; }
 }

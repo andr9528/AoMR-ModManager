@@ -115,6 +115,42 @@ namespace ModManager.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Dialog_Cancel.
+        /// </summary>
+        public static string Dialog_Cancel {
+            get {
+                return ResourceManager.GetString("Dialog_Cancel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dialog_Confirm.
+        /// </summary>
+        public static string Dialog_Confirm {
+            get {
+                return ResourceManager.GetString("Dialog_Confirm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dialog_Deletion_Message.
+        /// </summary>
+        public static string Dialog_Deletion_Message {
+            get {
+                return ResourceManager.GetString("Dialog_Deletion_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dialog_Deletion_Title.
+        /// </summary>
+        public static string Dialog_Deletion_Title {
+            get {
+                return ResourceManager.GetString("Dialog_Deletion_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Edit_Header.
         /// </summary>
         public static string Edit_Header {

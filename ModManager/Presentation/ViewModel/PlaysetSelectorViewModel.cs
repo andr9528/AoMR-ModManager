@@ -3,7 +3,7 @@ using ModManager.Abstractions.Services;
 
 namespace ModManager.Presentation.ViewModel;
 
-public partial class PlaylistSelectorViewModel : ObservableObject, IViewModel
+public partial class PlaysetSelectorViewModel : ObservableObject, IViewModel
 {
     [ObservableProperty] private bool isMenuOpen;
 
@@ -16,7 +16,7 @@ public partial class PlaylistSelectorViewModel : ObservableObject, IViewModel
         IsMenuOpenChanged?.Invoke(this, value);
     }
 
-    public PlaylistSelectorViewModel(IStateService stateService)
+    public PlaysetSelectorViewModel(IStateService stateService)
     {
         StateService = stateService;
     }

@@ -25,4 +25,16 @@ public static class ResourceKeys
         public const string ACTIVATE = nameof(Resources.Actions_Activate);
         public const string INDICATOR = nameof(Resources.Actions_Indicator);
     }
+
+    public static class Dialog
+    {
+        public const string CONFIRM = nameof(Resources.Dialog_Confirm);
+        public const string CANCEL = nameof(Resources.Dialog_Cancel);
+
+        public static class Delete
+        {
+            public const string TITLE = nameof(Resources.Dialog_Deletion_Title);
+            public const string MESSAGE = nameof(Resources.Dialog_Deletion_Message);
+        }
+    }
 }

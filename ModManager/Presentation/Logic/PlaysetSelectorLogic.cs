@@ -1,6 +1,8 @@
 using CommunityToolkit.WinUI.UI.Controls;
 using ModManager.Abstractions.Models;
 using ModManager.Abstractions.Services;
+using ModManager.Presentation.Factory;
+using ModManager.Strings;
 
 namespace ModManager.Presentation.Logic;
 
@@ -8,20 +10,78 @@ public class PlaysetSelectorLogic
 {
     private readonly IFileService fileService;
     private readonly IStateService stateService;
+    private readonly ITranslationService translationService;
+    private readonly UIElement parentElement;
     private readonly ILogger<PlaysetSelectorLogic> logger;
-    private bool suppressSelectionCahngeDueToButtonClick;
+    private bool suppressSelectionChangeDueToButtonClick;
 
-    public PlaysetSelectorLogic(IFileService fileService, IStateService stateService)
+    public PlaysetSelectorLogic(
+        IFileService fileService, IStateService stateService, ITranslationService translationService,
+        UIElement parentElement)
     {
         this.fileService = fileService;
         this.stateService = stateService;
+        this.translationService = translationService;
+        this.parentElement = parentElement;
         logger =
             ActivatorUtilities.GetServiceOrCreateInstance<ILogger<PlaysetSelectorLogic>>(App.Startup.ServiceProvider);
     }
 
     public void DeleteButtonClicked(object sender, RoutedEventArgs e)
     {
+        var button = sender as Button;
+
+        if (button?.Tag is not IPlayset taggedPlayset)
+        {
+            logger.LogWarning(
+                $"Expected Delete Playset button to be tagged with a {nameof(IPlayset)}, but it was not.");
+
+            return;
+        }
+
+        var message = $"{translationService[ResourceKeys.Dialog.Delete.MESSAGE]}{taggedPlayset.FileName})";
+
+        ContentDialog dialog =
+            DialogFactory.CreateConfirmationDialog(translationService[ResourceKeys.Dialog.Delete.TITLE], message,
+                translationService);
+        dialog.XamlRoot = parentElement.XamlRoot;
+        dialog.Tag = taggedPlayset;
+
+        dialog.PrimaryButtonClick += DeleteDialogOnPrimaryButtonClick;
+
+        _ = dialog.ShowAsync();
     }
+
+    private void DeleteDialogOnPrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
+    {
+        if (sender?.Tag is not IPlayset taggedPlayset)
+        {
+            logger.LogWarning(
+                $"Expected Delete Content Dialog to be tagged with a {nameof(IPlayset)}, but it was not.");
+
+            return;
+        }
+
+        bool wasDeleted = fileService.DeletePlayset(taggedPlayset);
+        if (!wasDeleted)
+        {
+            return;
+        }
+
+        logger.LogInformation("Deleted playset: {PlaysetName}", taggedPlayset.FileName);
+
+        stateService.Playsets.Remove(taggedPlayset);
+        if (stateService.EditingPlayset?.FileName != taggedPlayset.FileName)
+        {
+            return;
+        }
+
+        stateService.EditingPlayset = stateService.Playsets.FirstOrDefault();
+
+        logger.LogInformation("Updated Selected playset for editing: {PlaysetName}",
+            stateService.EditingPlayset?.FileName ?? "null");
+    }
+
 
     public void RenameButtonClicked(object sender, RoutedEventArgs e)
     {
@@ -42,7 +102,7 @@ public class PlaysetSelectorLogic
             return;
         }
 
-        if (suppressSelectionCahngeDueToButtonClick)
+        if (suppressSelectionChangeDueToButtonClick)
         {
             if (e.RemovedItems.Count > 0)
             {
@@ -51,7 +111,7 @@ public class PlaysetSelectorLogic
                 dataGrid.SelectionChanged += DataGridRowSelectionChanged;
             }
 
-            suppressSelectionCahngeDueToButtonClick = false;
+            suppressSelectionChangeDueToButtonClick = false;
             return;
         }
 
@@ -78,7 +138,7 @@ public class PlaysetSelectorLogic
             return;
         }
 
-        suppressSelectionCahngeDueToButtonClick = true;
+        suppressSelectionChangeDueToButtonClick = true;
     }
 
     private T? FindParent<T>(DependencyObject child) where T : class, DependencyObject

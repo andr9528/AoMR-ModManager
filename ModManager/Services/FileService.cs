@@ -325,6 +325,28 @@ public class FileService : IFileService
         }
     }
 
+    /// <inheritdoc />
+    public bool DeletePlayset(IPlayset playset)
+    {
+        try
+        {
+            if (!DoesPlaysetExist(playset.FileName))
+            {
+                return false;
+            }
+
+            string path = GetPlaysetPath(playset.FileName);
+            File.Delete(path);
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Failed to delete playset: {PlaysetName}", playset.FileName);
+            throw;
+        }
+
+        return true;
+    }
+
     private async Task CreateAllOnPlayset(IModStatus currentModStatus)
     {
         try
@@ -390,7 +412,11 @@ public class FileService : IFileService
     /// </returns>
     private bool DoesPlaysetExist(string fileName)
     {
-        string filePath = Path.Combine(PlaysetsLocation, EnsureExtension(fileName, ".json"));
-        return File.Exists(filePath);
+        return File.Exists(GetPlaysetPath(fileName));
+    }
+
+    private string GetPlaysetPath(string fileName)
+    {
+        return Path.Combine(PlaysetsLocation, EnsureExtension(fileName, ".json"));
     }
 }

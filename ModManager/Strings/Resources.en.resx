@@ -141,4 +141,16 @@
   <data name="Actions_Indicator" xml:space="preserve">
     <value>Playset Active?</value>
   </data>
+  <data name="Dialog_Deletion_Title" xml:space="preserve">
+    <value>Delete?</value>
+  </data>
+  <data name="Dialog_Deletion_Message" xml:space="preserve">
+    <value>Are you sure you want to delete this Playset? (</value>
+  </data>
+  <data name="Dialog_Confirm" xml:space="preserve">
+    <value>Confirm</value>
+  </data>
+  <data name="Dialog_Cancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
 </root>

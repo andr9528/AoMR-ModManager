@@ -14,4 +14,5 @@ public interface IFileService
     Task UpdatePlaysetProperties(IModStatus currentModStatus, IPlayset playset);
     Task NewPlayset(IPlayset playset, bool makeEmptyPlayset = true);
     Task SaveModStatusChanges(IModStatus? modStatus);
+    bool DeletePlayset(IPlayset playset);
 }

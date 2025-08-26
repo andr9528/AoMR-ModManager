@@ -18,9 +18,9 @@ public class PlaysetSelectorUserInterface : BaseUserInterface
     }
 
     private readonly PlaysetSelectorLogic logic;
-    private readonly ViewModel.PlaylistSelectorViewModel viewModel;
+    private readonly ViewModel.PlaysetSelectorViewModel viewModel;
 
-    public PlaysetSelectorUserInterface(PlaysetSelectorLogic logic, ViewModel.PlaylistSelectorViewModel viewModel)
+    public PlaysetSelectorUserInterface(PlaysetSelectorLogic logic, ViewModel.PlaysetSelectorViewModel viewModel)
     {
         this.logic = logic;
         this.viewModel = viewModel;
@@ -125,8 +125,10 @@ public class PlaysetSelectorUserInterface : BaseUserInterface
         Button button = ButtonFactory.CreateFontIconButton(Constants.Glyphs.RENAME_SYMBOL_UNICODE);
         button.Margin = new Thickness(2);
 
-        button.SetBinding(FrameworkElement.TagProperty,
-            new Binding {Path = new PropertyPath(nameof(IPlayset.FileName)),});
+        var tagBinding = new Binding();
+
+        button.SetBinding(FrameworkElement.TagProperty, tagBinding);
+
         button.Click += logic.RenameButtonClicked;
         return button;
     }
@@ -136,8 +138,9 @@ public class PlaysetSelectorUserInterface : BaseUserInterface
         Button button = ButtonFactory.CreateFontIconButton(Constants.Glyphs.DELETE_SYMBOL_UNICODE);
         button.Margin = new Thickness(2);
 
-        button.SetBinding(FrameworkElement.TagProperty,
-            new Binding {Path = new PropertyPath(nameof(IPlayset.FileName)),});
+        var tagBinding = new Binding();
+
+        button.SetBinding(FrameworkElement.TagProperty, tagBinding);
 
         button.Click += logic.DeleteButtonClicked;
         return button;

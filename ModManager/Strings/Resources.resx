@@ -141,4 +141,16 @@
   <data name="Actions_Indicator" xml:space="preserve">
     <value>Actions_Indicator</value>
   </data>
+  <data name="Dialog_Deletion_Title" xml:space="preserve">
+    <value>Dialog_Deletion_Title</value>
+  </data>
+  <data name="Dialog_Deletion_Message" xml:space="preserve">
+    <value>Dialog_Deletion_Message</value>
+  </data>
+  <data name="Dialog_Confirm" xml:space="preserve">
+    <value>Dialog_Confirm</value>
+  </data>
+  <data name="Dialog_Cancel" xml:space="preserve">
+    <value>Dialog_Cancel</value>
+  </data>
 </root>

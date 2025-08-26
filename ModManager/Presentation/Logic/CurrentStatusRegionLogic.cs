@@ -8,8 +8,13 @@ namespace ModManager.Presentation.Logic;
 
 public class CurrentStatusRegionLogic : BaseLogic, IDisplayerLogic
 {
+    private readonly ILogger<CurrentStatusRegionLogic> logger;
+
     public CurrentStatusRegionLogic(IStateService stateService) : base(stateService)
     {
+        logger =
+            ActivatorUtilities.GetServiceOrCreateInstance<ILogger<CurrentStatusRegionLogic>>(
+                App.Startup.ServiceProvider);
     }
 
 
@@ -19,6 +24,9 @@ public class CurrentStatusRegionLogic : BaseLogic, IDisplayerLogic
 
         if (button?.Tag is not IMod taggedMod)
         {
+            logger.LogWarning($"Expected button in '{nameof(AddModClicked)}' to be tagged with a '{nameof(IMod)}'");
+
+
             return;
         }
 
@@ -41,6 +49,9 @@ public class CurrentStatusRegionLogic : BaseLogic, IDisplayerLogic
 
         if (button.Tag is not IMod taggedMod)
         {
+            logger.LogWarning(
+                $"Expected button in '{nameof(EnabledIndicatorButtonClicked)}' to be tagged with a '{nameof(IMod)}'");
+
             return;
         }
 

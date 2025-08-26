@@ -8,11 +8,15 @@ namespace ModManager.Presentation.Logic;
 public class EditPlaysetRegionLogic : BaseLogic, IDisplayerLogic
 {
     private readonly ViewModel.EditPlaysetRegionViewModel viewModel;
+    private readonly ILogger<EditPlaysetRegionLogic> logger;
 
     public EditPlaysetRegionLogic(IStateService stateService, ViewModel.EditPlaysetRegionViewModel viewModel) :
         base(stateService)
     {
         this.viewModel = viewModel;
+
+        logger =
+            ActivatorUtilities.GetServiceOrCreateInstance<ILogger<EditPlaysetRegionLogic>>(App.Startup.ServiceProvider);
     }
 
     /// <inheritdoc />
@@ -25,6 +29,9 @@ public class EditPlaysetRegionLogic : BaseLogic, IDisplayerLogic
 
         if (button.Tag is not IMod taggedMod)
         {
+            logger.LogWarning(
+                $"Expected button in '{nameof(EnabledIndicatorButtonClicked)}' to be tagged with a '{nameof(IMod)}'");
+
             return;
         }
 
@@ -45,6 +52,8 @@ public class EditPlaysetRegionLogic : BaseLogic, IDisplayerLogic
 
         if (button.Tag is not IMod taggedMod)
         {
+            logger.LogWarning($"Expected button in '{nameof(RemoveModClicked)}' to be tagged with a '{nameof(IMod)}'");
+
             return;
         }
 

@@ -34,7 +34,7 @@ public class PlaysetSelectorLogic
         if (button?.Tag is not IPlayset taggedPlayset)
         {
             logger.LogWarning(
-                $"Expected Delete Playset button to be tagged with a {nameof(IPlayset)}, but it was not.");
+                $"Expected button in '{nameof(DeleteButtonClicked)}' to be tagged with a '{nameof(IPlayset)}'.");
 
             return;
         }
@@ -57,7 +57,7 @@ public class PlaysetSelectorLogic
         if (sender?.Tag is not IPlayset taggedPlayset)
         {
             logger.LogWarning(
-                $"Expected Delete Content Dialog to be tagged with a {nameof(IPlayset)}, but it was not.");
+                $"Expected Content Dialog in '{nameof(DeleteDialogOnPrimaryButtonClick)}' to be tagged with a '{nameof(IPlayset)}'.");
 
             return;
         }

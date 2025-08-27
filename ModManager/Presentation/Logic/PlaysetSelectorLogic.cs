@@ -104,7 +104,7 @@ public class PlaysetSelectorLogic
         dialog.XamlRoot = parentElement.XamlRoot;
         dialog.Tag = taggedPlayset;
 
-        dialog.PrimaryButtonClick += content.Logic.RenameDialogOnPrimaryButtonClick;
+        dialog.PrimaryButtonClick += content.Logic.RenamePlaysetDialogOnPrimaryButtonClick;
 
         _ = dialog.ShowAsync();
     }
@@ -171,5 +171,21 @@ public class PlaysetSelectorLogic
         }
 
         return child as T;
+    }
+
+    public void NewPlaysetButtonClicked(object sender, RoutedEventArgs e)
+    {
+        var button = sender as Button;
+
+        var content = ActivatorUtilities.CreateInstance<NewPlaysetDialogContent>(App.Startup.ServiceProvider);
+
+        ContentDialog dialog = DialogFactory.CreateDefaultDialog(translationService[ResourceKeys.Dialog.Create.TITLE],
+            content, translationService[ResourceKeys.Dialog.SAVE], translationService[ResourceKeys.Dialog.DISCARD]);
+
+        dialog.XamlRoot = parentElement.XamlRoot;
+
+        dialog.PrimaryButtonClick += content.Logic.NewPlaysetDialogOnPrimaryButtonClick;
+
+        _ = dialog.ShowAsync();
     }
 }

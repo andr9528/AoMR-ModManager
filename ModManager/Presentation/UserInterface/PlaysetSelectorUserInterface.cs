@@ -34,13 +34,47 @@ public class PlaysetSelectorUserInterface : BaseUserInterface
             Margin = new Thickness(10),
         };
 
-        Button button = CreatePanelToggleButton();
+        StackPanel togglePanel = CreateTogglePanel();
         DataGrid dataGrid = CreateDataGrid();
 
-        panel.Children.Add(button);
+        panel.Children.Add(togglePanel);
         panel.Children.Add(dataGrid);
 
         return panel;
+    }
+
+    private StackPanel CreateTogglePanel()
+    {
+        var panel = new StackPanel
+        {
+            Orientation = Orientation.Horizontal,
+        };
+
+        Button panelToggleButton = CreatePanelToggleButton();
+        Button newPlaysetButton = CreateNewPlaysetButton();
+
+        panel.Children.Add(panelToggleButton);
+        panel.Children.Add(newPlaysetButton);
+
+        return panel;
+    }
+
+    private Button CreateNewPlaysetButton()
+    {
+        var icon = new FontIcon()
+        {
+            FontSize = 12,
+            Glyph = Constants.Glyphs.ADD_SYMBOL_UNICODE,
+            Foreground = new SolidColorBrush(Constants.UiColors.AddFontColor),
+        };
+
+        Button button = ButtonFactory.CreateFontIconButton(icon);
+        button.HorizontalAlignment = HorizontalAlignment.Left;
+        button.Margin = new Thickness(2, 0, 0, 0);
+
+        button.Click += logic.NewPlaysetButtonClicked;
+
+        return button;
     }
 
     private Button CreatePanelToggleButton()

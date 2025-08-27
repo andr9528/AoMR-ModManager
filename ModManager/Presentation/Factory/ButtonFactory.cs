@@ -18,6 +18,15 @@ public static class ButtonFactory
         return button;
     }
 
+    public static Button CreateFontIconButton(FontIcon icon)
+    {
+        Button button = CreateDefaultButton();
+
+        button.Content = icon;
+
+        return button;
+    }
+
     public static Button CreateFontIconButton(string glyphUnicode, int fontSize = 12)
     {
         Button button = CreateDefaultButton();

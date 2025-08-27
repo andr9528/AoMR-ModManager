@@ -165,4 +165,22 @@
   <data name="Dialog_Rename_Title" xml:space="preserve">
     <value>Dialog_Rename_Title</value>
   </data>
+  <data name="Dialog_Create_Title" xml:space="preserve">
+    <value>Dialog_Create_Title</value>
+  </data>
+  <data name="Dialog_Create_Message_One" xml:space="preserve">
+    <value>Dialog_Create_Message_One</value>
+  </data>
+  <data name="Dialog_Create_Message_Two" xml:space="preserve">
+    <value>Dialog_Create_Message_Two</value>
+  </data>
+  <data name="Dialog_Create_Option_One" xml:space="preserve">
+    <value>Dialog_Create_Option_One</value>
+  </data>
+  <data name="Dialog_Create_Option_Two" xml:space="preserve">
+    <value>Dialog_Create_Option_Two</value>
+  </data>
+  <data name="Dialog_Create_Option_Three" xml:space="preserve">
+    <value>Dialog_Create_Option_Three</value>
+  </data>
 </root>

@@ -43,7 +43,7 @@ public class RenamePlaysetDialogContentUserInterface : BaseUserInterface
 
         var textBinding = new Binding()
         {
-            Path = nameof(viewModel.RenameText),
+            Path = nameof(viewModel.PlaysetName),
             Mode = BindingMode.TwoWay,
         };
 

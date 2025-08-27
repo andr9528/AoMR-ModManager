@@ -44,5 +44,16 @@ public static class ResourceKeys
             public const string TITLE = nameof(Resources.Dialog_Rename_Title);
             public const string MESSAGE = nameof(Resources.Dialog_Rename_Message);
         }
+
+        public static class Create
+        {
+            public const string TITLE = nameof(Resources.Dialog_Create_Title);
+            public const string MESSAGE_ONE = nameof(Resources.Dialog_Create_Message_One);
+            public const string MESSAGE_TWO = nameof(Resources.Dialog_Create_Message_Two);
+
+            public const string OPTION_ONE = nameof(Resources.Dialog_Create_Option_One);
+            public const string OPTION_TWO = nameof(Resources.Dialog_Create_Option_Two);
+            public const string OPTION_THREE = nameof(Resources.Dialog_Create_Option_Three);
+        }
     }
 }

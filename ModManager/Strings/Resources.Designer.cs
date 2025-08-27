@@ -133,6 +133,60 @@ namespace ModManager.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Dialog_Create_Message_One.
+        /// </summary>
+        public static string Dialog_Create_Message_One {
+            get {
+                return ResourceManager.GetString("Dialog_Create_Message_One", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dialog_Create_Message_Two.
+        /// </summary>
+        public static string Dialog_Create_Message_Two {
+            get {
+                return ResourceManager.GetString("Dialog_Create_Message_Two", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dialog_Create_Option_One.
+        /// </summary>
+        public static string Dialog_Create_Option_One {
+            get {
+                return ResourceManager.GetString("Dialog_Create_Option_One", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dialog_Create_Option_Three.
+        /// </summary>
+        public static string Dialog_Create_Option_Three {
+            get {
+                return ResourceManager.GetString("Dialog_Create_Option_Three", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dialog_Create_Option_Two.
+        /// </summary>
+        public static string Dialog_Create_Option_Two {
+            get {
+                return ResourceManager.GetString("Dialog_Create_Option_Two", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dialog_Create_Title.
+        /// </summary>
+        public static string Dialog_Create_Title {
+            get {
+                return ResourceManager.GetString("Dialog_Create_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Dialog_Deletion_Message.
         /// </summary>
         public static string Dialog_Deletion_Message {

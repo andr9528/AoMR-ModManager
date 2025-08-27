@@ -7,12 +7,10 @@ public interface IFileService
     Task<IModStatus> GetCurrentModStatus();
     Task ActivatePlayset(IPlayset playset);
     Task SavePlayset(IPlayset playset);
-    Task<IModStatus> LoadModStatus(string fileName);
     Task<IList<IPlayset>> LoadPlaysets();
     Task CreateDefaultPlaysetsIfNotExists(IModStatus currentModStatus);
     Task UpdatePlaysetsProperties(IModStatus currentModStatus, IList<IPlayset> playsets);
     Task UpdatePlaysetProperties(IModStatus currentModStatus, IPlayset playset);
-    Task NewPlayset(IPlayset playset, bool makeEmptyPlayset = true);
     Task SaveModStatusChanges(IModStatus? modStatus);
     bool DeletePlayset(IPlayset playset);
     bool RenamePlayset(string oldName, string newName);

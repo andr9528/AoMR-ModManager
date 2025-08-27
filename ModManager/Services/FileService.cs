@@ -90,6 +90,7 @@ public class FileService : IFileService
             string content = JsonConvert.SerializeObject(playset.ModStatus, Formatting.Indented);
 
             await File.WriteAllTextAsync(savePath, content);
+            logger.LogInformation("Saved playset '{PlaysetName}' to '{SavePath}'", playset.FileName, savePath);
         }
         catch (Exception e)
         {
@@ -127,8 +128,7 @@ public class FileService : IFileService
             : Path.ChangeExtension(path, targetExt);
     }
 
-    /// <inheritdoc />
-    public async Task<IModStatus> LoadModStatus(string fileName)
+    private async Task<IModStatus> LoadModStatus(string fileName)
     {
         try
         {
@@ -272,39 +272,6 @@ public class FileService : IFileService
 
             return clonedMod;
         }));
-    }
-
-    /// <inheritdoc />
-    public async Task NewPlayset(IPlayset playset, bool makeEmptyPlayset = true)
-    {
-        try
-        {
-            if (DoesPlaysetExist(playset.FileName))
-            {
-                return;
-            }
-
-            IModStatus clonedModStatus = FastCloner.FastCloner.DeepClone(playset.ModStatus) ??
-                                         throw new InvalidOperationException($"Failed to Clone the current Mod Status");
-
-            if (makeEmptyPlayset)
-            {
-                clonedModStatus.Mods = new ObservableCollection<IMod>(clonedModStatus.Mods.Select(mod =>
-                {
-                    mod.IsHidden = true;
-                    return mod;
-                }));
-            }
-
-            var newPlayset = new Playset(playset.FileName, clonedModStatus);
-
-            await SavePlayset(newPlayset);
-        }
-        catch (Exception e)
-        {
-            logger.LogError(e, "Failed to create new playset: {PlaysetName}", playset.FileName);
-            throw;
-        }
     }
 
     /// <inheritdoc />

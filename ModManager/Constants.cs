@@ -15,6 +15,7 @@ public static class Constants
         public const string CROSS_SYMBOL_UNICODE = "\uE8BB";
         public const string FOLDER_SYMBOL_UNICODE = "\uE8B7";
         public const string CLOUD_SYMBOL_UNICODE = "\uE753";
+        public const string ADD_SYMBOL_UNICODE = "\uE710";
     }
 
     public static class UiColors
@@ -30,6 +31,7 @@ public static class Constants
         public static Color MissingRowColor = Colors.DarkOrange.WithAlpha(0.4);
         public static Color LabelColor = Colors.Black;
         public static Color DialogLabelColor = Colors.White;
+        public static Color AddFontColor = Colors.DarkGreen;
     }
 
     public static class Fonts

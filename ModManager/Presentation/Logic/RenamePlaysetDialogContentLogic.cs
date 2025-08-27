@@ -1,21 +1,21 @@
-﻿using ModManager.Abstractions.Models;
+using ModManager.Abstractions.Models;
 using ModManager.Abstractions.Services;
 
 namespace ModManager.Presentation;
 
-public class RenameDialogContentLogic
+public class RenamePlaysetDialogContentLogic
 {
-    private readonly RenameDialogContentViewModel viewModel;
+    private readonly RenamePlaysetDialogContentViewModel viewModel;
     private readonly IFileService fileService;
-    private readonly ILogger<RenameDialogContentLogic> logger;
+    private readonly ILogger<RenamePlaysetDialogContentLogic> logger;
 
-    public RenameDialogContentLogic(RenameDialogContentViewModel viewModel, IFileService fileService)
+    public RenamePlaysetDialogContentLogic(RenamePlaysetDialogContentViewModel viewModel, IFileService fileService)
     {
         this.viewModel = viewModel;
         this.fileService = fileService;
         logger =
-            ActivatorUtilities.GetServiceOrCreateInstance<ILogger<RenameDialogContentLogic>>(
-                App.Startup.ServiceProvider);
+            ActivatorUtilities.GetServiceOrCreateInstance<ILogger<RenamePlaysetDialogContentLogic>>(App.Startup
+                .ServiceProvider);
     }
 
     public void RenameDialogOnPrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)

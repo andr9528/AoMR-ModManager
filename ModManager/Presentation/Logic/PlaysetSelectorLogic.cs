@@ -96,7 +96,7 @@ public class PlaysetSelectorLogic
             return;
         }
 
-        var content = new RenameDialogContent(translationService, taggedPlayset);
+        var content = new RenamePlaysetDialogContent(translationService, taggedPlayset);
 
         ContentDialog dialog = DialogFactory.CreateDefaultDialog(translationService[ResourceKeys.Dialog.Rename.TITLE],
             content, translationService[ResourceKeys.Dialog.SAVE], translationService[ResourceKeys.Dialog.DISCARD]);

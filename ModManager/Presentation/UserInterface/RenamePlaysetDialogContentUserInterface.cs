@@ -6,14 +6,15 @@ using ModManager.Strings;
 
 namespace ModManager.Presentation;
 
-public class RenameDialogContentUserInterface : BaseUserInterface
+public class RenamePlaysetDialogContentUserInterface : BaseUserInterface
 {
-    private readonly RenameDialogContentLogic logic;
-    private readonly RenameDialogContentViewModel viewModel;
+    private readonly RenamePlaysetDialogContentLogic logic;
+    private readonly RenamePlaysetDialogContentViewModel viewModel;
     private readonly ITranslationService translationService;
 
-    public RenameDialogContentUserInterface(
-        RenameDialogContentLogic logic, RenameDialogContentViewModel viewModel, ITranslationService translationService)
+    public RenamePlaysetDialogContentUserInterface(
+        RenamePlaysetDialogContentLogic logic, RenamePlaysetDialogContentViewModel viewModel,
+        ITranslationService translationService)
     {
         this.logic = logic;
         this.viewModel = viewModel;

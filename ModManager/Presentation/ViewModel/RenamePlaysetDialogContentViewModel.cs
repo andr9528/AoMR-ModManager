@@ -1,13 +1,13 @@
-﻿using ModManager.Abstractions.Models;
+using ModManager.Abstractions.Models;
 
 namespace ModManager.Presentation;
 
-public class RenameDialogContentViewModel
+public class RenamePlaysetDialogContentViewModel
 {
     public IPlayset Playset { get; }
     public string RenameText { get; init; }
 
-    public RenameDialogContentViewModel(IPlayset playset)
+    public RenamePlaysetDialogContentViewModel(IPlayset playset)
     {
         Playset = playset;
         RenameText = playset.FileName;

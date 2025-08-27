@@ -1,4 +1,4 @@
-namespace ModManager.Presentation;
+namespace ModManager.Presentation.Factory;
 
 public static class ComboBoxFactory
 {

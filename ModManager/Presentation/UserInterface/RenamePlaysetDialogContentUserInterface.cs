@@ -2,9 +2,11 @@ using ModManager.Abstractions.Services;
 using ModManager.Extensions;
 using ModManager.Presentation.Core;
 using ModManager.Presentation.Factory;
+using ModManager.Presentation.Logic;
+using ModManager.Presentation.ViewModel;
 using ModManager.Strings;
 
-namespace ModManager.Presentation;
+namespace ModManager.Presentation.UserInterface;
 
 public class RenamePlaysetDialogContentUserInterface : BaseUserInterface
 {

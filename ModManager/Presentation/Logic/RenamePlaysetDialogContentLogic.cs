@@ -1,7 +1,8 @@
 using ModManager.Abstractions.Models;
 using ModManager.Abstractions.Services;
+using ModManager.Presentation.ViewModel;
 
-namespace ModManager.Presentation;
+namespace ModManager.Presentation.Logic;
 
 public class RenamePlaysetDialogContentLogic
 {

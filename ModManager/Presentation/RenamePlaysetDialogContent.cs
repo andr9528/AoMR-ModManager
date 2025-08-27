@@ -1,5 +1,8 @@
 using ModManager.Abstractions.Models;
 using ModManager.Abstractions.Services;
+using ModManager.Presentation.Logic;
+using ModManager.Presentation.UserInterface;
+using ModManager.Presentation.ViewModel;
 
 namespace ModManager.Presentation;
 

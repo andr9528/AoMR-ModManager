@@ -4,7 +4,6 @@ using ModManager.Extensions;
 using ModManager.Presentation.Core;
 using ModManager.Presentation.Factory;
 using ModManager.Strings;
-using Uno.UI.RemoteControl.Messaging.IdeChannel;
 using Windows.ApplicationModel.DataTransfer;
 using Microsoft.UI.Dispatching;
 using Newtonsoft.Json;

@@ -39,11 +39,12 @@ public class PlaysetSelectorLogic
             return;
         }
 
-        var message = $"{translationService[ResourceKeys.Dialog.Delete.MESSAGE]}{taggedPlayset.FileName})";
+        var message = $"{translationService[ResourceKeys.Dialog.Delete.MESSAGE]} ({taggedPlayset.FileName})";
 
         ContentDialog dialog =
             DialogFactory.CreateConfirmationDialog(translationService[ResourceKeys.Dialog.Delete.TITLE], message,
                 translationService);
+
         dialog.XamlRoot = parentElement.XamlRoot;
         dialog.Tag = taggedPlayset;
 
@@ -85,6 +86,27 @@ public class PlaysetSelectorLogic
 
     public void RenameButtonClicked(object sender, RoutedEventArgs e)
     {
+        var button = sender as Button;
+
+        if (button?.Tag is not IPlayset taggedPlayset)
+        {
+            logger.LogWarning(
+                $"Expected button in '{nameof(RenameButtonClicked)}' to be tagged with a '{nameof(IPlayset)}'.");
+
+            return;
+        }
+
+        var content = new RenameDialogContent(translationService, taggedPlayset);
+
+        ContentDialog dialog = DialogFactory.CreateDefaultDialog(translationService[ResourceKeys.Dialog.Rename.TITLE],
+            content, translationService[ResourceKeys.Dialog.SAVE], translationService[ResourceKeys.Dialog.DISCARD]);
+
+        dialog.XamlRoot = parentElement.XamlRoot;
+        dialog.Tag = taggedPlayset;
+
+        dialog.PrimaryButtonClick += content.Logic.RenameDialogOnPrimaryButtonClick;
+
+        _ = dialog.ShowAsync();
     }
 
     public void UpdateDataGridColumnVisibility(bool isOpen, DataGrid dataGrid)

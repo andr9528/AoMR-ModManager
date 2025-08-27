@@ -151,6 +151,42 @@ namespace ModManager.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Dialog_Discard.
+        /// </summary>
+        public static string Dialog_Discard {
+            get {
+                return ResourceManager.GetString("Dialog_Discard", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dialog_Rename_Message.
+        /// </summary>
+        public static string Dialog_Rename_Message {
+            get {
+                return ResourceManager.GetString("Dialog_Rename_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dialog_Rename_Title.
+        /// </summary>
+        public static string Dialog_Rename_Title {
+            get {
+                return ResourceManager.GetString("Dialog_Rename_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dialog_Save.
+        /// </summary>
+        public static string Dialog_Save {
+            get {
+                return ResourceManager.GetString("Dialog_Save", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Edit_Header.
         /// </summary>
         public static string Edit_Header {

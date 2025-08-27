@@ -17,7 +17,7 @@ public static class TextBlockFactory
         {
             HorizontalAlignment = HorizontalAlignment.Center,
             VerticalAlignment = VerticalAlignment.Center,
-            Foreground = new SolidColorBrush(Colors.Black),
+            Foreground = new SolidColorBrush(Constants.UiColors.LabelColor),
             Margin = new Thickness(2),
         };
     }

@@ -347,6 +347,39 @@ public class FileService : IFileService
         return true;
     }
 
+    /// <inheritdoc />
+    public bool RenamePlayset(string oldName, string newName)
+    {
+        try
+        {
+            if (!DoesPlaysetExist(oldName))
+            {
+                logger.LogWarning("Cannot rename playset because the source playset '{OldName}' does not exist.",
+                    oldName);
+                return false;
+            }
+
+            if (DoesPlaysetExist(newName))
+            {
+                logger.LogWarning(
+                    "Cannot rename playset from '{OldName}' to '{NewName}' because the target name already exists.",
+                    oldName, newName);
+                return false;
+            }
+
+            string oldPath = GetPlaysetPath(oldName);
+            string newPath = GetPlaysetPath(newName);
+            File.Move(oldPath, newPath);
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Failed to rename playset from '{OldName}' to '{NewName}'", oldName, newName);
+            throw;
+        }
+
+        return true;
+    }
+
     private async Task CreateAllOnPlayset(IModStatus currentModStatus)
     {
         try

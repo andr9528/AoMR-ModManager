@@ -12,7 +12,7 @@ public static class DialogFactory
             translationService[ResourceKeys.Dialog.CANCEL]);
     }
 
-    private static ContentDialog CreateDefaultDialog(string title, object content, string yesButton, string noButton)
+    public static ContentDialog CreateDefaultDialog(string title, object content, string yesButton, string noButton)
     {
         return new ContentDialog
         {
@@ -20,7 +20,7 @@ public static class DialogFactory
             Content = content,
             PrimaryButtonText = yesButton,
             CloseButtonText = noButton,
-            DefaultButton = ContentDialogButton.Close,
+            DefaultButton = ContentDialogButton.None,
         };
     }
 }

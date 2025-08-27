@@ -150,7 +150,19 @@
   <data name="Dialog_Confirm" xml:space="preserve">
     <value>Dialog_Confirm</value>
   </data>
+  <data name="Dialog_Save" xml:space="preserve">
+    <value>Dialog_Save</value>
+  </data>
   <data name="Dialog_Cancel" xml:space="preserve">
     <value>Dialog_Cancel</value>
+  </data>
+  <data name="Dialog_Discard" xml:space="preserve">
+    <value>Dialog_Discard</value>
+  </data>
+  <data name="Dialog_Rename_Message" xml:space="preserve">
+    <value>Dialog_Rename_Message</value>
+  </data>
+  <data name="Dialog_Rename_Title" xml:space="preserve">
+    <value>Dialog_Rename_Title</value>
   </data>
 </root>

@@ -28,6 +28,8 @@ public static class Constants
         public static Color InformationButtonColor = Colors.CadetBlue.WithAlpha(0.4);
         public static Color RowBorderColor = Colors.Black;
         public static Color MissingRowColor = Colors.DarkOrange.WithAlpha(0.4);
+        public static Color LabelColor = Colors.Black;
+        public static Color DialogLabelColor = Colors.White;
     }
 
     public static class Fonts

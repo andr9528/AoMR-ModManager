@@ -30,11 +30,19 @@ public static class ResourceKeys
     {
         public const string CONFIRM = nameof(Resources.Dialog_Confirm);
         public const string CANCEL = nameof(Resources.Dialog_Cancel);
+        public const string SAVE = nameof(Resources.Dialog_Save);
+        public const string DISCARD = nameof(Resources.Dialog_Discard);
 
         public static class Delete
         {
             public const string TITLE = nameof(Resources.Dialog_Deletion_Title);
             public const string MESSAGE = nameof(Resources.Dialog_Deletion_Message);
+        }
+
+        public static class Rename
+        {
+            public const string TITLE = nameof(Resources.Dialog_Rename_Title);
+            public const string MESSAGE = nameof(Resources.Dialog_Rename_Message);
         }
     }
 }

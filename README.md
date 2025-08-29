@@ -21,6 +21,7 @@ Features include...
 - Allows to only include relevant mods in Playsets, to improve readability. ([BUGGED](https://github.com/andr9528/AoMR-ModManager/issues/12))
 - Creating default Playsets, with either all mods on or off, as that are some Playsets i commonly expect users to want.
 - Updates all Playsets on startup with updated data from `myth-mod-status.json`, incase of e.g a mod having been updated.
+- Striped mod indicator in Playset, if that mod is missing from the `myth-mod-status.json`, i.e it is not installed.
 
 ### How it Works
 

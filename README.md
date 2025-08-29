@@ -2,13 +2,42 @@
 
 A Tool to manage Mods for Age of Mythology Retold
 
+## Description
+
+This tool allow easier control of active mod for your Age of Mythology Retold installation.
+Features include...
+
+- Changing currently active mods directly.
+- Changing multiple active mods with one click, by activating a 'Playset'.
+- Creating 'Playsets' from...
+  - Current mods status, i.e from your `myth-mod-status.json`.
+  - Another selected Playset, i.e the current Playset being edited, allowing easy duplication of Playsets.
+  - ([WIP](https://github.com/andr9528/AoMR-ModManager/issues/6)) Clipboard, to easily share a Playset with others.
+- ([WIP](https://github.com/andr9528/AoMR-ModManager/issues/8)) Change priority of mods in your Playsets.
+- ([WIP](https://github.com/andr9528/AoMR-ModManager/issues/9)) Reloading of manual changes to managed files.
+- ([WIP](https://github.com/andr9528/AoMR-ModManager/issues/5)) Filter Mods shown in your Playset(s).
+- Deleting of Playset files from the tool.
+- Renaming of Playset files from the tool.
+- Allows to only include relevant mods in Playsets, to improve readability. ([BUGGED](https://github.com/andr9528/AoMR-ModManager/issues/12))
+- Creating default Playsets, with either all mods on or off, as that are some Playsets i commonly expect users to want.
+- Updates all Playsets on startup with updated data from `myth-mod-status.json`, incase of e.g a mod having been updated.
+
+### How it Works
+
+The tool does its job, by making copies of the `myth-mod-status.json` file, from that point onward referencing them as 'Playsets'. When a 'Playset' is activated, it will overwrite the content of the `myth-mod-status.json` file, with the content of the Playset.
+
 ## Installation
 
-To install this tool, download the file from [releases](https://github.com/andr9528/AoMR-ModManager/releases) that fits your operating system, e.g '.exe' for Windows, and place it in the '/mods/' folder of your 'Age of Mythology Retold' installation.
+To install this tool, download the file from [releases](https://github.com/andr9528/AoMR-ModManager/releases) that fits your operating system.
+For windows you would do the following.
 
-Make sure there is a 'myth-mod-status.json' in that folder.
+1. Download the `.exe` file from the release page.
+2. Place it in the `C:\Users\[Your Username]\Games\Age of Mythology Retold\[A bunch of Numbers]\mods\` folder of your 'Age of Mythology Retold' installation.
+
+Make sure there is a `myth-mod-status.json` in that folder.
 Age of Mythology Retold should have generated it, if you have done anything with mods before, otherwise find a mod you like and download it, that should at the very least generate it.
-I Can highly suggest the '5x Relics' Mod :P
+
+I Can highly suggest the '5x Relics' Mod.
 
 ## Feedback
 
